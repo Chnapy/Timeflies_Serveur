@@ -1,0 +1,94 @@
+package Connection.storage;
+
+import java.net.InetAddress;
+import java.util.Date;
+import java.util.UUID;
+import java.util.concurrent.ConcurrentHashMap;
+
+import Console.utils.ConsoleDisplay;
+
+/**
+ * @author alexandre
+ * TokenBank.java
+ */
+public class TokenBank {
+
+	private final static long TOKEN_TIMEOUT = 1000; // ms TODO define a real value for that timeout.
+
+	private static TokenBank currentInstance;
+
+	private ConcurrentHashMap<UUID, UserInformation> tokens;
+
+	public static void init() {
+		ConsoleDisplay.start("Token database");
+		try {
+			currentInstance = new TokenBank();
+			ConsoleDisplay.success();
+		} catch (Exception e) {
+			ConsoleDisplay.fail();
+			ConsoleDisplay.printStack(e);
+		}
+
+	}
+
+	public TokenBank() {
+		tokens = new ConcurrentHashMap<UUID, UserInformation>();
+	}
+
+	//TODO check if it's still the same ip on the first case.
+	public synchronized UUID addToken(String username, InetAddress ip) {
+		UserInformation crt = new UserInformation(username, new Date(System.currentTimeMillis()), ip);
+		UUID token;
+		if (tokens.containsValue(crt)) {
+			for (UUID k : tokens.keySet()) {
+				if (tokens.get(k).equals(crt)) {
+					//Bad InetAddress.
+					if (!tokens.get(k).getIp().equals(ip)) {
+						tokens.remove(k);
+						token = UUID.randomUUID();
+						tokens.put(token, crt);
+						return token;
+					} else {
+						return k;
+					}
+				}
+			}
+
+			return null;
+		} else {
+			token = UUID.randomUUID();
+			tokens.put(token, crt);
+			return token;
+		}
+	}
+
+	public synchronized void removeToken(UUID token) {
+		tokens.remove(token);
+	}
+
+	public synchronized boolean refreshToken(UUID token) {
+		if (!isTokenValid(token)) {
+			return false;
+		} else {
+			tokens.get(token).setRefreshToCurrentTime();
+			return true;
+		}
+	}
+
+	//TODO define new token validity condition.
+	public synchronized boolean isTokenValid(UUID token) {
+		try {
+			return tokens.get(token).getLastRefresh().getTime() + TOKEN_TIMEOUT > System.currentTimeMillis();
+		} catch (NullPointerException e) {
+			return false;
+		}
+	}
+
+	public static TokenBank getCurrentInstance() {
+		return currentInstance;
+	}
+
+	public ConcurrentHashMap<UUID, UserInformation> getTokens() {
+		return tokens;
+	}
+}

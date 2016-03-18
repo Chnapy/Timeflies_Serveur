@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<root>
+		<logs>
+			<username>timeflies</username>
+			<pwd>Vtffede1</pwd>
+		</logs>
+		<address>
+			<url>richardhaddad.fr</url>
+			<port>5432</port>
+			<dbname>timeflies</dbname>
+		</address>
+</root>

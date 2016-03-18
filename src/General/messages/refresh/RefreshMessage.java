@@ -1,0 +1,17 @@
+package General.messages.refresh;
+
+import General.messages.Message;
+
+/**
+ * @author alexandre
+ * RefreshMessage.java
+ */
+public class RefreshMessage extends Message {
+
+	private final static MessageType TYPE = MessageType.REFRESH;
+
+	public RefreshMessage() {
+		super(TYPE);
+	}
+
+}
