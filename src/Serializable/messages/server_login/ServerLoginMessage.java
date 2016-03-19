@@ -1,6 +1,6 @@
-package General.messages.server_login;
+package Serializable.messages.server_login;
 
-import General.messages.Message;
+import Serializable.messages.Message;
 
 /**
  * @author alexandre
@@ -12,6 +12,11 @@ public class ServerLoginMessage extends Message {
 
 	public ServerLoginMessage() {
 		super(TYPE);
+	}
+
+	@Override
+	protected String completeString() {
+		return "";
 	}
 
 }

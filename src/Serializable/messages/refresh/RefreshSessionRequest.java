@@ -1,4 +1,4 @@
-package General.messages.refresh;
+package Serializable.messages.refresh;
 
 import java.io.Serializable;
 import java.util.UUID;

@@ -16,7 +16,7 @@ public class SortInvocationActive extends SortActif {
 				new Niveau(1),
 				new Effet[]{
 					new Effet(new Declencheur[]{
-						new InvocationMobileTest()
+//						new InvocationMobileTest()
 					})
 				},
 				new ZoneAction(new Carre(1, true)),

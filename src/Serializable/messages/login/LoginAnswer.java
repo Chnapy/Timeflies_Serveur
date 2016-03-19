@@ -1,6 +1,5 @@
-package General.messages.login;
+package Serializable.messages.login;
 
-import java.io.Serializable;
 import java.util.UUID;
 
 /*
@@ -11,7 +10,7 @@ import java.util.UUID;
  * 								- FAIL : bad login/password, try again.
  * 								- ERROR : somthing went wrong, you can get an error code.
  */
-public class LoginAnswer extends LoginMessage implements Serializable {
+public class LoginAnswer extends LoginMessage {
 
 	private static final long serialVersionUID = -5375108905288101051L;
 
@@ -29,5 +28,10 @@ public class LoginAnswer extends LoginMessage implements Serializable {
 		SUCCESS, FAIL, ERROR;
 
 		public int errorCode;
+	}
+
+	@Override
+	protected String completeString() {
+		return "answer : " + answer + " token : " + token;
 	}
 }

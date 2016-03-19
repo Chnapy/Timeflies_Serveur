@@ -22,23 +22,15 @@ public class Guerrier2 extends Personnage {
 	private static final int INDEX_TEXTURE = 1;
 	private static final int INDEX_TEXTURE_TIMELINE = 1;
 
-	public Guerrier2() {
+	public Guerrier2(CaracteristiquePhysique cp, SortPassif[] sp, SortActif[] sa) {
 		this(
 				"perso bleu", 
 				0, 
 				0, 
 				EST,
-				new CaracteristiquePhysique(110, 12000, 1500, 0, 100),
-				new SortPassif[]{
-					new SortPassifBonusVitesseAction(),
-					new SortPassifEffetSoin()
-				},
-				new SortActif[]{
-					new SortQuiFaitMal(),
-					new SortEnvoutementBonus(),
-					new SortInvocationPassive(),
-					new SortInvocationActive()
-				}
+				cp,
+				sp,
+				sa
 		);
 	}
 

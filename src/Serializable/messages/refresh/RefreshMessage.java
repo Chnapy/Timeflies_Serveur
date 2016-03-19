@@ -1,6 +1,6 @@
-package General.messages.refresh;
+package Serializable.messages.refresh;
 
-import General.messages.Message;
+import Serializable.messages.Message;
 
 /**
  * @author alexandre
@@ -12,6 +12,11 @@ public class RefreshMessage extends Message {
 
 	public RefreshMessage() {
 		super(TYPE);
+	}
+
+	@Override
+	protected String completeString() {
+		return "";
 	}
 
 }

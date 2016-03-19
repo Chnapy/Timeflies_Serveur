@@ -46,23 +46,30 @@ public class DBMapper {
 		return database;
 	}
 
-	public static ResultSet executeQuery(String query, Object... args) throws SQLException {
-		if (database == null) {
-			ConsoleDisplay.error("ERROR, Can't execute any query : no connection to database.");
-			return null;
-		}
+	public static ResultSet executeQuery(String query, QueryType type, Object... args) throws SQLException {
+
+		ResultSet result = null;
 
 		try {
 			PreparedStatement stat = database.prepareStatement(query);
-
+			//Fill args
 			for (int i = 0; i < args.length; i++) {
 				stat.setObject(i + 1, args[i]);
 			}
 
-			return stat.executeQuery();
+			switch (type) {
+				case SELECT:
+					result = stat.executeQuery();
+					break;
+				default: //The Select is the only action that returns a resultSet.
+					stat.executeUpdate();
+					break;
+			}
+
+			return result;
 
 		} catch (SQLException e) {
-			ConsoleDisplay.error("ERROR : Statement creation failed.");
+			ConsoleDisplay.debug(e);
 			throw e;
 		}
 
@@ -96,6 +103,10 @@ public class DBMapper {
 			ConsoleDisplay.printStack(e);
 			return null;
 		}
+	}
+
+	public enum QueryType {
+		SELECT, UPDATE, DELETE, INSERT;
 	}
 
 }

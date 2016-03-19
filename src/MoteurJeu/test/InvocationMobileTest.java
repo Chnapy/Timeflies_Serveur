@@ -21,16 +21,14 @@ import MoteurJeu.general.Orientation;
  */
 public class InvocationMobileTest extends InvocationMobile {
 
-	public InvocationMobileTest() {
+	public InvocationMobileTest(CaracteristiquePhysique cp, SortPassif[] sp, SortActif[] sa) {
 		super("Invoc. mobile", 
 				0, 
 				0, 
 				Orientation.NORD, 
-				new SortPassif[]{}, 
-				new SortActif[] {
-					new SortQuiFaitMal()
-				}, 
-				new CaracteristiquePhysique(110, 13000, 1500, 0, 100),
+				sp,
+				sa,
+				cp,
 				1, 
 				1);
 	}

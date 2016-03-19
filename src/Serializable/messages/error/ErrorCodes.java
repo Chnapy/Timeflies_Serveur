@@ -1,4 +1,4 @@
-package General.messages.error;
+package Serializable.messages.error;
 
 /**
  * @author alexandre

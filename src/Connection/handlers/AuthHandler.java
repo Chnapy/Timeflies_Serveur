@@ -1,5 +1,6 @@
 package Connection.handlers;
 
+import CombatHandler.CombatHandlerRun;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
@@ -8,34 +9,39 @@ import java.util.UUID;
 
 import Connection.checkers.LoginChecker;
 import Connection.exceptions.AuthentificationException;
-import General.messages.Message;
-import General.messages.error.ErrorCodes;
-import General.messages.error.ErrorMessage;
-import General.messages.login.LoginAnswer;
-import General.messages.login.LoginMessage;
-import General.messages.login.LoginRequest;
-import General.messages.refresh.RefreshMessage;
-import General.messages.refresh.RefreshSessionAnswer;
-import General.messages.refresh.RefreshSessionAnswer.Answer;
-import General.messages.refresh.RefreshSessionRequest;
-import General.messages.server_login.ServerLoginAnswer;
-import General.messages.server_login.ServerLoginAnswer.AnswerType;
-import General.messages.server_login.ServerLoginMessage;
-import General.messages.server_login.ServerLoginRequest;
+import Serializable.messages.Message;
+import Serializable.messages.error.ErrorCodes;
+import Serializable.messages.error.ErrorMessage;
+import Serializable.messages.login.LoginAnswer;
+import Serializable.messages.login.LoginMessage;
+import Serializable.messages.login.LoginRequest;
+import Serializable.messages.refresh.RefreshMessage;
+import Serializable.messages.refresh.RefreshSessionAnswer;
+import Serializable.messages.refresh.RefreshSessionAnswer.Answer;
+import Serializable.messages.refresh.RefreshSessionRequest;
+import Serializable.messages.server_login.ServerLoginAnswer;
+import Serializable.messages.server_login.ServerLoginAnswer.AnswerType;
+import Serializable.messages.server_login.ServerLoginMessage;
+import Serializable.messages.server_login.ServerLoginRequest;
 import Connection.storage.TokenBank;
 import Console.utils.ConsoleDisplay;
+import MoteurJeu.gameplay.core.Joueur;
+import Serializable.messages.combat.CombatMessage;
 
 public class AuthHandler implements Runnable {
 
 	private final static int RETRY = 5;
 
-	private Socket socket;
-	private ObjectInputStream in;
-	private ObjectOutputStream out;
+	private final Socket socket;
+	private final ObjectInputStream in;
+	private final ObjectOutputStream out;
 	private TokenBank tokenBank;
 
-	private boolean isAServer;
+	private final boolean isAServer;
 	private boolean endRequest;
+
+	private boolean isLog;
+	private Joueur joueur;
 
 	public AuthHandler(Socket socket) throws IOException {
 		this.socket = socket;
@@ -44,6 +50,7 @@ public class AuthHandler implements Runnable {
 		tokenBank = null;
 		isAServer = false;
 		endRequest = false;
+		isLog = false;
 	}
 
 	@Override
@@ -51,12 +58,16 @@ public class AuthHandler implements Runnable {
 		Message inMessage;
 		try {
 			inMessage = (Message) in.readObject();
+			ConsoleDisplay.notice("Message reçu : " + inMessage);
 			switch (inMessage.getMessageType()) {
 				case LOGIN: //Login request
 					handleLogin((LoginMessage) inMessage);
 					break;
 				case SERVER_LOGIN: //Server login request
 					handleServerLogin((ServerLoginMessage) inMessage);
+					break;
+				case COMBAT:	//Combat request
+					handleCombat((CombatMessage) inMessage);
 					break;
 				default: //Can be a refresh request, but if the request is receive here, the socket is not auth.
 					ConsoleDisplay.error("Unkhown or missused message.");
@@ -85,12 +96,14 @@ public class AuthHandler implements Runnable {
 
 		//login/pwd check
 		try {
+			LoginChecker.LoginPack data = LoginChecker.checkLogin(request);
+
 			//SUCCESS
-			if (LoginChecker.checkLogin(request)) {
-				token = TokenBank.getCurrentInstance().addToken(request.login, socket.getInetAddress());
-				out.writeObject(new LoginAnswer(LoginAnswer.AnswerType.SUCCESS, token));
-				ConsoleDisplay.notice("A connection attempt is successful.");
-			}
+			token = TokenBank.getCurrentInstance().addToken(request.login, socket.getInetAddress());
+			joueur = new Joueur(data.id, token, data.pseudo);
+			out.writeObject(new LoginAnswer(LoginAnswer.AnswerType.SUCCESS, token));
+			isLog = true;
+			ConsoleDisplay.notice("A connection attempt is successful.");
 		} catch (AuthentificationException e) {
 			//FAIL
 			ConsoleDisplay.notice("A connection attempt failed : bad login/password.");
@@ -140,7 +153,6 @@ public class AuthHandler implements Runnable {
 		if (!isAServer) {
 			sendMessage(new ErrorMessage(ErrorCodes.NOT_A_SERVER, ErrorCodes.NOT_A_SERVER_txt));
 			close();
-
 		} else {
 			boolean cont = true;
 			RefreshMessage message;
@@ -148,12 +160,10 @@ public class AuthHandler implements Runnable {
 			RefreshSessionAnswer answer;
 			while (cont && !endRequest) {
 				message = (RefreshMessage) readMessage();
-
 				//Will stop communications.
 				if (message.isEndOfCom()) {
 					cont = false;
 				} else {
-
 					request = (RefreshSessionRequest) message;
 					//Check token validity and refresh it.
 					if (tokenBank.refreshToken(request.token)) {
@@ -163,13 +173,18 @@ public class AuthHandler implements Runnable {
 						//Failure.
 						answer = new RefreshSessionAnswer(Answer.TIME_OUT);
 					}
-
 					sendMessage(answer);
 				}
 			}
-
 			close();
 		}
+	}
+
+	private void handleCombat(CombatMessage combatMessage) {
+		if (!isLog) {
+			return;
+		}
+		CombatHandlerRun.handle(combatMessage, joueur);
 	}
 
 	/**

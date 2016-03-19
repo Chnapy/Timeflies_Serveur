@@ -1,6 +1,6 @@
-package General.messages.login;
+package Serializable.messages.login;
 
-import General.messages.Message;
+import Serializable.messages.Message;
 
 /**
  * @author alexandre

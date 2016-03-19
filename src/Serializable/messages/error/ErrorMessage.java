@@ -1,8 +1,8 @@
-package General.messages.error;
+package Serializable.messages.error;
 
 import java.io.Serializable;
 
-import General.messages.Message;
+import Serializable.messages.Message;
 
 /**
  * @author alexandre
@@ -24,8 +24,13 @@ public class ErrorMessage extends Message implements Serializable {
 	}
 
 	@Override
-	public String toString() {
+	protected String completeString() {
 		return "Error : " + text + "(code # " + code + " )";
 	}
+
+//	@Override
+//	public String toString() {
+//		return "Error : " + text + "(code # " + code + " )";
+//	}
 
 }

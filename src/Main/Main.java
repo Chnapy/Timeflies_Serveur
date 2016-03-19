@@ -15,7 +15,7 @@ import General.utils.ThreadManager;
 
 /**
  * Main.java
- Main
+ * Main
  */
 public class Main {
 

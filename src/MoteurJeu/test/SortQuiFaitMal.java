@@ -25,11 +25,11 @@ public class SortQuiFaitMal extends SortActif {
 	private final static String DESCRIPTION = "Ca fait mal";
 	private final static int INDEX = 1;
 
-	public SortQuiFaitMal() {
+	public SortQuiFaitMal(Niveau niveau) {
 		super(
 				NOM,
 				DESCRIPTION,
-				new Niveau(0),
+				niveau,
 				new Effet[]{
 					new Effet(new Declencheur[]{
 						new Balus(Carac.VITALITE, -30)

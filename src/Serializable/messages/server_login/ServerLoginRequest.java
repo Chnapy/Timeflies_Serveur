@@ -1,4 +1,4 @@
-package General.messages.server_login;
+package Serializable.messages.server_login;
 
 import java.io.Serializable;
 

@@ -12,7 +12,6 @@ import MoteurJeu.gameplay.sort.SortPassif;
 import MoteurJeu.general.Orientation;
 import static MoteurJeu.general.Orientation.EST;
 
-
 /**
  * Guerrier.java
  * CLASSE DE TEST
@@ -23,24 +22,15 @@ public class Guerrier extends Personnage {
 	private static final int INDEX_TEXTURE = 0;
 	private static final int INDEX_TEXTURE_TIMELINE = 0;
 
-	public Guerrier() {
+	public Guerrier(CaracteristiquePhysique cp, SortPassif[] sp, SortActif[] sa) {
 		this(
-				"perso rouge", 
-				1, 
-				2, 
+				"perso rouge",
+				1,
+				2,
 				EST,
-				new CaracteristiquePhysique(100, 15000, 1200, 10, 125),
-				new SortPassif[]{
-					new SortPassifBonusVitesseAction(),
-					new SortPassifEffetSoin()
-				},
-				new SortActif[]{
-					new SortQuiFaitMal(),
-					new SortEnvoutementBonus(),
-					new SortEnvoutementEffet(),
-					new SortInvocationPassive(),
-					new SortInvocationActive()
-				}
+				cp,
+				sp,
+				sa
 		);
 	}
 
