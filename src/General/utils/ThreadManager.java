@@ -1,37 +1,19 @@
 package General.utils;
 
-import Console.utils.ConsoleDisplay;
-import java.util.ArrayList;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 
 /**
  * @author alexandre
  * ThreadManager.java
  */
-public class ThreadManager extends ArrayList<Thread> {
+public class ThreadManager {
 
-	private static ThreadManager currentInstance;
+	private static final int MAX_POOL_SIZE = 64;
 
-	public static void init() {
-		ConsoleDisplay.start("Thread manager");
-		try {
-			currentInstance = new ThreadManager();
-			ConsoleDisplay.success();
-		} catch (Exception e) {
-			ConsoleDisplay.fail();
-			throw e;
-		}
+	public static final ExecutorService EXEC = Executors.newFixedThreadPool(MAX_POOL_SIZE);
 
-	}
-
-	public static ThreadManager getCurrentInstance() {
-		return currentInstance;
-	}
-
-	public void killAllThreads() {
-		for (Thread thread : this) {
-			if (thread.isAlive()) {
-				thread.interrupt();
-			}
-		}
+	public static void killAllThreads() {
+		EXEC.shutdown();
 	}
 }

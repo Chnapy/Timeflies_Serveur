@@ -1,6 +1,5 @@
 package Database.settings;
 
-import Database.settings.DataBaseSettings;
 import java.io.File;
 
 import javax.xml.parsers.DocumentBuilder;

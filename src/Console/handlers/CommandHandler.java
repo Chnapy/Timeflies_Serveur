@@ -20,21 +20,19 @@ public class CommandHandler implements Runnable {
 	private ConsoleInput cInput;
 
 	private ConnectionsHandler connectionHandler;
-	private CombatHandlerRun combatHandlerRun;
 	private HashMap<String, Command> commands;
 	private boolean cont;
 
-	public CommandHandler(ConnectionsHandler ch, CombatHandlerRun chr) {
+	public CommandHandler(ConnectionsHandler ch) {
 		cInput = ConsoleInput.getCurrentInst();
 		this.connectionHandler = ch;
-		this.combatHandlerRun = chr;
 		commands = new HashMap<String, Command>();
 		initCommand();
 		cont = true;
 	}
 
 	private void initCommand() {
-		StopCmd stop = new StopCmd(connectionHandler, combatHandlerRun, this);
+		StopCmd stop = new StopCmd(connectionHandler, this);
 		PortCmd port = new PortCmd();
 		TokenListCmd tok = new TokenListCmd();
 
@@ -50,6 +48,7 @@ public class CommandHandler implements Runnable {
 			commands.get(cmd.toLowerCase()).handle(input);
 
 		} catch (NullPointerException e) {
+			e.printStackTrace();
 			ConsoleDisplay.notice("Wrong input.");
 		}
 

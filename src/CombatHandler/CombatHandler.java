@@ -5,26 +5,42 @@
  */
 package CombatHandler;
 
-import General.utils.ThreadManager;
+import CombatHandler.Combat.Combat;
+import Console.utils.ConsoleDisplay;
+import static General.utils.ThreadManager.EXEC;
+import java.util.LinkedList;
 
 /**
  * CombatHandler.java
  *
  */
 public class CombatHandler {
-	
-	private static CombatHandlerRun combatHandlerRun;
+
+	private static LinkedList<Combat> combats;
+	private static volatile boolean endRequest;
 
 	public static void init() throws Exception {
-		combatHandlerRun = new CombatHandlerRun();
-
-		Thread combatHandlerThread = new Thread(combatHandlerRun);
-		ThreadManager.getCurrentInstance().add(combatHandlerThread);
-		combatHandlerThread.start();
+		ConsoleDisplay.start("combat handler");
+		try {
+			combats = new LinkedList<Combat>();
+			endRequest = false;
+		} catch (Exception e) {
+			ConsoleDisplay.fail();
+			throw e;
+		}
+		ConsoleDisplay.success();
 	}
 
-	public static CombatHandlerRun getCombatHandlerRun() {
-		return combatHandlerRun;
+	public void newCombat() {
+		Combat cb = new Combat(CombatStartPack.getTestPack());
+		combats.add(cb);
+		EXEC.submit(cb);
+	}
+
+	public static void arret() {
+		combats.forEach((c) -> {
+			c.arret();
+		});
 	}
 
 }

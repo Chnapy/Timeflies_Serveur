@@ -7,9 +7,8 @@ package Connection;
 
 import Connection.handlers.ConnectionsHandler;
 import Console.handler.args.handlers.TestModeHandler;
-import Console.handlers.CommandHandler;
 import Console.utils.ConsoleDisplay;
-import General.utils.ThreadManager;
+import static General.utils.ThreadManager.EXEC;
 
 /**
  * Connection.java
@@ -30,9 +29,7 @@ public class Connection {
 
 			//Normal mode
 		} else {
-			Thread connectionHandlerThread = new Thread(connectionHandler);
-			ThreadManager.getCurrentInstance().add(connectionHandlerThread);
-			connectionHandlerThread.start();
+			EXEC.submit(connectionHandler);
 			ConsoleDisplay.notice("Waiting for connections...");
 
 		}

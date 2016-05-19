@@ -11,7 +11,8 @@ import Connection.storage.TokenBank;
 import Console.Console;
 import Console.utils.ConsoleDisplay;
 import Database.Database;
-import General.utils.ThreadManager;
+import Database.PlaceholderData;
+import HorsCombat.Controleur.HCControleur;
 
 /**
  * Main.java
@@ -27,14 +28,15 @@ public class Main {
 		ConsoleDisplay.splash();
 
 		try {
-			ThreadManager.init();
-
 			Console.init(args);
 			Database.init();
 			TokenBank.init();
 			CombatHandler.init();
-			Connection.init();
-			Console.initCmd(Connection.getConnectionHandler(), CombatHandler.getCombatHandlerRun());
+			HCControleur.init();
+//			Connection.init();
+			Console.initCmd(Connection.getConnectionHandler());
+			
+			PlaceholderData.init();
 		} catch (Exception e) {
 			ConsoleDisplay.error("Failed to initialize. Stopping the program.");
 			ConsoleDisplay.debug(e);

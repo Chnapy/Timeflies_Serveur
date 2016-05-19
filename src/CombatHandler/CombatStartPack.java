@@ -29,8 +29,7 @@ public class CombatStartPack {
 
 	public static CombatStartPack getTestPack() {
 
-		MapSerializable smap = Map.getMapSerializable(new File("test.tfmap"));
-		Map map = new Map(smap);
+		Map map = getTestMap();
 
 		Personnage[] persosJ1 = {
 			new Guerrier()
@@ -44,6 +43,12 @@ public class CombatStartPack {
 		};
 
 		return new CombatStartPack(map, joueurs);
+	}
+	
+	public static Map getTestMap() {
+		MapSerializable smap = Map.getMapSerializable(new File("test.tfmap"));
+		Map map = new Map(smap);
+		return map;
 	}
 
 }

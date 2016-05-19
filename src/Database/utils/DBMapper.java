@@ -20,20 +20,22 @@ import Console.utils.ConsoleDisplay;
  */
 public class DBMapper {
 
-	private static Connection database;
+	private final static String DATE_PATTERN = "HH:mm:ss dd/MM/YY"; //postgres
+	//public final static String DATE_PATTERN = "yyyy-MM-dd HH:mm:ss"; //mysql
+	public final static SimpleDateFormat DATE_FORMAT = new SimpleDateFormat(DATE_PATTERN);
+	
+	public final static String JDBC_CLASS = "org.postgresql.Driver";
 
-	private final static String DATE_PATTERN = "HH:mm:ss dd/MM/YY";
-	private final static SimpleDateFormat DATE_FORMAT = new SimpleDateFormat(DATE_PATTERN);
+	private static Connection crtConnection;
+
+	public final static int DUPLICATE_P_KEY_ERROR_CODE = 1062;
 
 	public static void init() throws Exception {
 
 		ConsoleDisplay.start("database connection");
 
-		DataBaseSettings dbSettings = SettingsManager.getDataBaseSettings();
-
 		try {
-			database = DriverManager.getConnection("jdbc:postgresql://" + dbSettings.getAddress() + ":" + dbSettings.getPort()
-					+ "/" + dbSettings.getDbName(), dbSettings.getUsername(), dbSettings.getPassword());
+			getPgSQLConnection();
 		} catch (Exception e) {
 			ConsoleDisplay.fail();
 			throw e;
@@ -42,29 +44,50 @@ public class DBMapper {
 		ConsoleDisplay.success();
 	}
 
-	public static Connection getDatabase() {
-		return database;
+	public static Connection getPgSQLConnection() throws SQLException {
+		try {
+			Class.forName(JDBC_CLASS);
+		} catch (ClassNotFoundException e) {
+			ConsoleDisplay.printStack(e);
+		}
+		
+		DataBaseSettings dbSettings = SettingsManager.getDataBaseSettings();
+
+		if (crtConnection == null) {
+			crtConnection = DriverManager.getConnection("jdbc:postgresql://" + dbSettings.getAddress() + ":" + dbSettings.getPort()
+					+ "/" + dbSettings.getDbName(), dbSettings.getUsername(), dbSettings.getPassword());
+		}
+
+		return crtConnection;
 	}
 
-	public static ResultSet executeQuery(String query, Object... args) throws SQLException {
-		if (database == null) {
-			ConsoleDisplay.error("ERROR, Can't execute any query : no connection to database.");
-			return null;
-		}
+	public static ResultSet executeQuery(String query, QueryType type, Object... args) throws SQLException {
+
+		Connection database;
+		ResultSet result = null;
 
 		try {
-			PreparedStatement stat = database.prepareStatement(query);
-
-			for (int i = 0; i < args.length; i++) {
-				stat.setObject(i + 1, args[i]);
-			}
-
-			return stat.executeQuery();
-
-		} catch (SQLException e) {
-			ConsoleDisplay.error("ERROR : Statement creation failed.");
-			throw e;
+			database = getPgSQLConnection();
+		} catch (SQLException e1) {
+			ConsoleDisplay.printStack(e1);
 		}
+		
+		PreparedStatement stat = crtConnection.prepareStatement(query);
+		//Fill args
+		for (int i = 0; i < args.length; i++) {
+			stat.setObject(i + 1, args[i]);
+		}
+
+		switch (type) {
+			case SELECT:
+				result = stat.executeQuery();
+				break;
+			default: //The Select is the only action that returns a resultSet.
+				stat.executeUpdate();
+				break;
+		}
+
+		return result;
 
 	}
 
@@ -73,14 +96,14 @@ public class DBMapper {
 	 * database interactions.
 	 * The used pattern is "HH:mm:ss dd/MM/YY".
 	 */
-	public static String getTime() {
+	public static String getTimeNow() {
 
 		return DATE_FORMAT.format(new Date(System.currentTimeMillis()));
 	}
 
 	/**
-	 * Parse a string to a date. Caution : this method is made to parse date
-	 * from data base who follow the "HH:mm:ss dd/MM/YY" pattern.
+	 * Parse a string to a date. Caution : this method has been made to parse
+	 * date from data base who follow the "yyyy-MM-dd HH:mm:ss" pattern.
 	 *
 	 * @param s
 	 *          String to parse.
@@ -92,10 +115,14 @@ public class DBMapper {
 		try {
 			return DATE_FORMAT.parse(s);
 		} catch (ParseException e) {
-			ConsoleDisplay.error("ERROR : Failed to parse time.");
-			ConsoleDisplay.printStack(e);
+			System.err.println("ERROR : Failed to parse time.");
 			return null;
 		}
+	}
+
+	public enum QueryType {
+
+		SELECT, UPDATE, DELETE, INSERT;
 	}
 
 }
