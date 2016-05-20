@@ -6,8 +6,8 @@
 package MoteurJeu.gameplay.sort;
 
 import MoteurJeu.gameplay.effet.Effet;
-import MoteurJeu.gameplay.entite.Entite;
-import MoteurJeu.gameplay.entite.EntiteActive;
+import MoteurJeu.gameplay.entite.variable.EntiteActiveVariable;
+import MoteurJeu.gameplay.entite.variable.EntiteVariable;
 import MoteurJeu.gameplay.map.Tuile;
 import MoteurJeu.general.Orientation;
 
@@ -21,21 +21,21 @@ public abstract class SortPassifBonus extends SortPassif {
 
 	/**
 	 *
+	 * @param id
+	 * @param idClasseEntite
 	 * @param nom
 	 * @param description
-	 * @param niveau
 	 * @param effets
 	 * @param index
 	 */
-	public SortPassifBonus(String nom, String description, Niveau niveau,
-			Effet[] effets,
+	public SortPassifBonus(int id, int idClasseEntite, String nom, String description, Effet[] effets,
 			int index) {
 
-		super(nom, description, niveau, effets, index);
+		super(id, idClasseEntite, nom, description, effets, index);
 	}
 
 	@Override
-	public void lancerSort(Entite cibleEntite, Tuile cibleTuile, EntiteActive lanceur, Orientation oriAttaque, boolean critique) {
+	public void lancerSort(EntiteVariable cibleEntite, Tuile cibleTuile, EntiteActiveVariable lanceur, Orientation oriAttaque, boolean critique) {
 		cibleEntite.recoitSort(getTabEffets(), cibleEntite, oriAttaque, critique);
 	}
 

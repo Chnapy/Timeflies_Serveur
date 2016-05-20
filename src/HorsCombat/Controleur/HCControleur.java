@@ -15,7 +15,7 @@ import HorsCombat.Modele.HCModele;
 public class HCControleur {
 
 	public static void init() {
-		new HCModele();
+		HCModele.init();
 		Matchmaking.init();
 	}
 

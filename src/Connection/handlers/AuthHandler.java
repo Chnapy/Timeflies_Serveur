@@ -80,33 +80,33 @@ public class AuthHandler implements Runnable {
 	 *          Login request.
 	 */
 	private void handleLogin(LoginMessage m) {
-		LoginRequest request = (LoginRequest) m;
-		UUID token;
-
-		//login/pwd check
-		try {
-			//SUCCESS
-			if (LoginChecker.checkLogin(request)) {
-				token = TokenBank.getCurrentInstance().addToken(request.login, socket.getInetAddress());
-				out.writeObject(new LoginAnswer(LoginAnswer.AnswerType.SUCCESS, token));
-				ConsoleDisplay.notice("A connection attempt is successful.");
-			}
-		} catch (AuthentificationException e) {
-			//FAIL
-			ConsoleDisplay.notice("A connection attempt failed : bad login/password.");
-			if (!sendMessage(new LoginAnswer(LoginAnswer.AnswerType.FAIL, null))) {
-				close();
-				return;
-			}
-		} catch (IOException e) {
-			//ERROR
-			if (!sendMessage(new LoginAnswer(LoginAnswer.AnswerType.ERROR, null))) {
-				close();
-				return;
-			}
-		} finally {
-			close();
-		}
+//		LoginRequest request = (LoginRequest) m;
+//		UUID token;
+//
+//		//login/pwd check
+//		try {
+//			//SUCCESS
+//			if (LoginChecker.checkLogin(request)) {
+//				token = TokenBank.getCurrentInstance().addToken(request.login, socket.getInetAddress());
+//				out.writeObject(new LoginAnswer(LoginAnswer.AnswerType.SUCCESS, token));
+//				ConsoleDisplay.notice("A connection attempt is successful.");
+//			}
+//		} catch (AuthentificationException e) {
+//			//FAIL
+//			ConsoleDisplay.notice("A connection attempt failed : bad login/password.");
+//			if (!sendMessage(new LoginAnswer(LoginAnswer.AnswerType.FAIL, null))) {
+//				close();
+//				return;
+//			}
+//		} catch (IOException e) {
+//			//ERROR
+//			if (!sendMessage(new LoginAnswer(LoginAnswer.AnswerType.ERROR, null))) {
+//				close();
+//				return;
+//			}
+//		} finally {
+//			close();
+//		}
 
 	}
 
@@ -117,17 +117,17 @@ public class AuthHandler implements Runnable {
 	 * @param m
 	 */
 	private void handleServerLogin(ServerLoginMessage m) {
-		ServerLoginRequest request = (ServerLoginRequest) m;
-		tokenBank = TokenBank.getCurrentInstance();
-
-		if (LoginChecker.checkServerLogin(request)) {
-			sendMessage(new ServerLoginAnswer(AnswerType.SUCCES));
-			handleRefresh();
-		} else {
-			sendMessage(new ServerLoginAnswer(AnswerType.BAD_INFOS));
-			close();
-		}
-		//TODO handle server login request w/ modification of database.
+//		ServerLoginRequest request = (ServerLoginRequest) m;
+//		tokenBank = TokenBank.getCurrentInstance();
+//
+//		if (LoginChecker.checkServerLogin(request)) {
+//			sendMessage(new ServerLoginAnswer(AnswerType.SUCCES));
+//			handleRefresh();
+//		} else {
+//			sendMessage(new ServerLoginAnswer(AnswerType.BAD_INFOS));
+//			close();
+//		}
+//		//TODO handle server login request w/ modification of database.
 	}
 
 	/**

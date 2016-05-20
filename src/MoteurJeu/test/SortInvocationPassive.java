@@ -1,31 +1,29 @@
 package MoteurJeu.test;
 
+import HorsCombat.Modele.InitialData;
 import MoteurJeu.gameplay.effet.Declencheur;
 import MoteurJeu.gameplay.effet.Effet;
-import MoteurJeu.gameplay.sort.Niveau;
 import MoteurJeu.gameplay.sort.SortActif;
 import MoteurJeu.gameplay.sort.zone.Carre;
 import MoteurJeu.gameplay.sort.zone.ZoneAction;
 
-
 public class SortInvocationPassive extends SortActif {
 
-	public SortInvocationPassive() {
-		super(
-				"Sort d'invocation",
-				"Sort d'invocation de test qui se soigne lors de la reception de degats (wahou...)",
-				new Niveau(1),
+	public SortInvocationPassive(int id, int idClasseEntite, String nom, String description, int tempsAction, int cooldown, int fatigue) {
+		super(id, idClasseEntite,
+				nom,
+				description,
 				new Effet[]{
 					new Effet(new Declencheur[]{
-						new InvocationPassiveTest()
+						(InvocationPassiveTest) InitialData.getEntiteFromClass(InvocationPassiveTest.class)
 					})
 				},
 				new ZoneAction(new Carre(2, true)),
 				new ZoneAction(new Carre(0, true)),
 				4,
-				2000,
-				4,
-				10
+				tempsAction,
+				cooldown,
+				fatigue
 		);
 	}
 

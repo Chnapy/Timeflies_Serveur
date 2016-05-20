@@ -17,7 +17,7 @@ public class LoginChecker {
 	private final static String LOGIN_CHECK_QUERY = "SELECT * FROM joueur natural join infoscompte WHERE lower(pseudo) = ? AND mdp = ?;";
 	private final static String ADD_UUID_QUERY = "INSERT INTO session VALUES(?, ?, ?);";
 
-	private static boolean isLoginCorrect(String login, String pwd) {
+	public static boolean isLoginCorrect(String login, String pwd) {
 		ResultSet res;
 		try {
 			res = DBMapper.executeQuery(LOGIN_CHECK_QUERY, SELECT, login.toLowerCase(), pwd);
@@ -29,18 +29,18 @@ public class LoginChecker {
 		return false;
 	}
 
-	public static boolean checkLogin(LoginRequest request) throws AuthentificationException {
-		if (isLoginCorrect(request.login, request.pwd)) {
-			return true;
-		} else {
-			throw new AuthentificationException();
-		}
-	}
+//	public static boolean checkLogin(LoginRequest request) throws AuthentificationException {
+//		if (isLoginCorrect(request.login, request.pwd)) {
+//			return true;
+//		} else {
+//			throw new AuthentificationException();
+//		}
+//	}
 
-	public static boolean checkServerLogin(ServerLoginRequest request) {
-		//TODO verify that the user is a server.
-		return isLoginCorrect(request.login, request.pwd);
-	}
+//	public static boolean checkServerLogin(ServerLoginRequest request) {
+//		//TODO verify that the user is a server.
+//		return isLoginCorrect(request.login, request.pwd);
+//	}
 
 	public static void addUUIDToDB(UUID token, String ip) {
 		try {

@@ -14,6 +14,7 @@ import Serializable.Logs.AskLogs;
 import Serializable.Personnages.HCPersonnage;
 import java.io.IOException;
 import java.net.Socket;
+import java.sql.SQLException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -37,14 +38,20 @@ public class Client {
 
 	public void receiveFromClient(Object pack) {
 		if (pack instanceof AskLogs) {
-			connexion((AskLogs) pack);
+			if (!isLogged()) {
+				try {
+					connexion((AskLogs) pack);
+				} catch (SQLException ex) {
+					Logger.getLogger(Client.class.getName()).log(Level.SEVERE, null, ex);
+				}
+			}
 		} else if (pack instanceof AskCombat) {
 			if (isLogged()) {
 				Matchmaking.addNewClient(this, (AskCombat) pack);
 			}
 		}
 	}
-	
+
 	public void sendToServer(Object o) {
 		try {
 			servClient.send(o);
@@ -53,11 +60,9 @@ public class Client {
 		}
 	}
 
-	public void connexion(AskLogs pack) {
-		if (isLogged()) {
-			return;
-		}
+	public void connexion(AskLogs pack) throws SQLException {
 		AnswerLogs al = HCModele.getClientData(pack);
+		System.out.println(al.accepted);
 		if (al.accepted) {
 			infosCompte = al.infosCompte;
 			persos = al.persos;

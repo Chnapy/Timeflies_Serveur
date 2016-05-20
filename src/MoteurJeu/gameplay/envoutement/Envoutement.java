@@ -7,8 +7,8 @@ package MoteurJeu.gameplay.envoutement;
 
 import MoteurJeu.gameplay.effet.Declencheur;
 import MoteurJeu.gameplay.effet.Effet;
-import MoteurJeu.gameplay.entite.Entite;
-import MoteurJeu.gameplay.entite.EntiteActive;
+import MoteurJeu.gameplay.entite.variable.EntiteActiveVariable;
+import MoteurJeu.gameplay.entite.variable.EntiteVariable;
 import MoteurJeu.general.Orientation;
 
 /**
@@ -25,7 +25,7 @@ public abstract class Envoutement implements Declencheur {
 	//Durée de l'envoutement en nombre de tours
 	private int duree;
 
-	private Entite cible;
+	private EntiteVariable cible;
 
 	/**
 	 *
@@ -107,9 +107,9 @@ public abstract class Envoutement implements Declencheur {
 	}
 
 	@Override
-	public void lancerEntite(Entite victime, Orientation oriLanceur, boolean ccritique) {
-		if (victime instanceof EntiteActive) {
-			((EntiteActive) victime).addEnvoutement(this);
+	public void lancerEntite(EntiteVariable victime, Orientation oriLanceur, boolean ccritique) {
+		if (victime instanceof EntiteActiveVariable) {
+			((EntiteActiveVariable) victime).addEnvoutement(this);
 		}
 		setCible(victime);
 		actionDebutEnvoutement();
@@ -162,11 +162,11 @@ public abstract class Envoutement implements Declencheur {
 		return true;
 	}
 
-	public void setCible(Entite cible) {
+	public void setCible(EntiteVariable cible) {
 		this.cible = cible;
 	}
 
-	public Entite getCible() {
+	public EntiteVariable getCible() {
 		return cible;
 	}
 

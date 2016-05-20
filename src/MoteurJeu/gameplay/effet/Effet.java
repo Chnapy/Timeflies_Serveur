@@ -5,7 +5,7 @@
  */
 package MoteurJeu.gameplay.effet;
 
-import MoteurJeu.gameplay.entite.Entite;
+import MoteurJeu.gameplay.entite.variable.EntiteVariable;
 import MoteurJeu.gameplay.map.Tuile;
 import MoteurJeu.general.Orientation;
 
@@ -39,7 +39,7 @@ public class Effet {
 	 * @param oriLanceur
 	 * @param ccritique
 	 */
-	public void lancerEffetEntite(Entite cible, Orientation oriLanceur, boolean ccritique) {
+	public void lancerEffetEntite(EntiteVariable cible, Orientation oriLanceur, boolean ccritique) {
 		if (declencheur != null && declencheur.length != 0) {
 			for (Declencheur declencheur1 : declencheur) {
 				declencheur1.lancerEntite(cible, oriLanceur, ccritique);
@@ -47,7 +47,7 @@ public class Effet {
 		}
 	}
 
-	public void lancerEffetTuile(Tuile cible, Entite lanceur, Orientation oriLanceur, boolean ccritique) {
+	public void lancerEffetTuile(Tuile cible, EntiteVariable lanceur, Orientation oriLanceur, boolean ccritique) {
 		if (declencheur != null && declencheur.length != 0) {
 			for (Declencheur declencheur1 : declencheur) {
 				declencheur1.lancerTuile(cible, lanceur, oriLanceur, ccritique);

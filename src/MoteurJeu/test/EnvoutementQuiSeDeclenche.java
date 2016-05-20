@@ -10,12 +10,10 @@ import MoteurJeu.gameplay.effet.Balus;
 import MoteurJeu.gameplay.effet.Declenchable;
 import MoteurJeu.gameplay.effet.Declencheur;
 import MoteurJeu.gameplay.effet.Effet;
-import MoteurJeu.gameplay.entite.Entite;
+import MoteurJeu.gameplay.entite.variable.EntiteVariable;
 import MoteurJeu.gameplay.envoutement.EnvoutementEffets;
 import MoteurJeu.gameplay.map.Tuile;
 import MoteurJeu.general.Orientation;
-import MoteurJeu.test.DeclenchablePourEnvoutement;
-
 
 /**
  * EnvoutementQuiSeDeclenche.java
@@ -67,11 +65,11 @@ public class EnvoutementQuiSeDeclenche extends EnvoutementEffets {
 	}
 
 	@Override
-	public void lancerTuile(Tuile cible, Entite lanceur, Orientation oriLanceur, boolean ccritique) {
+	public void lancerTuile(Tuile cible, EntiteVariable lanceur, Orientation oriLanceur, boolean ccritique) {
 	}
 
 	@Override
-	protected void actionApplyEffect(Entite lanceur, boolean isAvant, boolean ccritique) {
+	protected void actionApplyEffect(EntiteVariable lanceur, boolean isAvant, boolean ccritique) {
 		if (isAvant) {
 			return;
 		}

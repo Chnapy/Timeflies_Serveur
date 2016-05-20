@@ -9,35 +9,34 @@ import java.util.Arrays;
 
 /**
  * CaracteristiquePhysique.java
- * Gère l'ensemble des caractéristiques physiques de l'entité.
+ Gère l'ensemble des caractéristiques physiques de l'entité.
  *
  */
 public class CaracteristiquePhysique {
 
 	//Tableau des caractéristiques possédées
-	private Caracteristique[] listCaracteristiques;
+	private final Caracteristique[] listCaracteristiques;
+	
+	private final CaracteristiquePhysiqueMax cpMax;
+	
 
 	/**
 	 * Représente l'ensemble des caractéristiques possédées : vitalité, temps
 	 * d'action, temps supplémentaire, fatigue, vitesse d'action
 	 *
-	 * @param vitaTotal
-	 * @param tActionTotal
-	 * @param tSupTotal
-	 * @param fatActu
-	 * @param vActionActu
+	 * @param cpMax
+	 * @param initiative
 	 */
-	public CaracteristiquePhysique(int vitaTotal, int tActionTotal, int tSupTotal, int fatActu, int vActionActu) {
-
-		listCaracteristiques = new Caracteristique[]{
-			new Vitalite(vitaTotal),
-			new TempsAction(tActionTotal),
-			new TempsSup(tSupTotal),
-			new Fatigue(fatActu),
-			new VitesseAction(vActionActu),
-			new Initiative(-1)
+	public CaracteristiquePhysique(CaracteristiquePhysiqueMax cpMax, int initiative) {
+		this.cpMax = cpMax;
+		listCaracteristiques = new Caracteristique[] {
+			new Vitalite(cpMax.vitalite),
+			new TempsAction(cpMax.tempsaction),
+			new TempsSup(cpMax.tempssup),
+			new VitesseAction(cpMax.vitesse),
+			new Fatigue(cpMax.fatigue),
+			new Initiative(initiative)
 		};
-
 	}
 
 	/**
@@ -110,9 +109,9 @@ public class CaracteristiquePhysique {
 				return listCaracteristiques[1];
 			case TEMPSSUPP:
 				return listCaracteristiques[2];
-			case FATIGUE:
-				return listCaracteristiques[3];
 			case VITESSEACTION:
+				return listCaracteristiques[3];
+			case FATIGUE:
 				return listCaracteristiques[4];
 			case INITIATIVE:
 				return listCaracteristiques[5];

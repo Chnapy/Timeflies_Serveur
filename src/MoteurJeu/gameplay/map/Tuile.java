@@ -9,7 +9,7 @@ import MoteurJeu.general.GridPoint2;
 import MoteurJeu.controleur.ControleurPrincipal;
 import MoteurJeu.gameplay.effet.Declencheur;
 import MoteurJeu.gameplay.effet.Effet;
-import MoteurJeu.gameplay.entite.Entite;
+import MoteurJeu.gameplay.entite.variable.EntiteVariable;
 import MoteurJeu.gameplay.invocation.Invocation;
 import static MoteurJeu.gameplay.map.EtatTuile.NORMAL;
 import MoteurJeu.general.Orientation;
@@ -113,12 +113,12 @@ public class Tuile {
 	 * @param oriAttaque
 	 * @param critique
 	 */
-	public void recoitSort(Effet[] effets, Entite lanceur, Orientation oriAttaque, boolean critique) {
+	public void recoitSort(Effet[] effets, EntiteVariable lanceur, Orientation oriAttaque, boolean critique) {
 		for (Effet effet : effets) {
 			for (Declencheur declencheur : effet.getDeclencheur()) {
 				if (declencheur instanceof Invocation) {
 					((Invocation) declencheur).invoquer(this.getPosition());
-					controleur.addEntite((Entite) declencheur);
+					controleur.addEntite((EntiteVariable) declencheur);
 				} else {
 					effet.lancerEffetTuile(this, lanceur, oriAttaque, critique);
 				}

@@ -1,6 +1,7 @@
 package MoteurJeu.gameplay.sort.pileaction;
 
 import MoteurJeu.gameplay.sort.SortActif;
+import MoteurJeu.gameplay.sort.SortVariable;
 import MoteurJeu.gameplay.sort.base.Deplacer;
 import MoteurJeu.gameplay.sort.base.Orienter;
 import MoteurJeu.general.GridPoint2;
@@ -18,13 +19,13 @@ public class Action {
 	 * La position du lieu ou vas se déroulé l'action
 	 */
 	private final GridPoint2 position;
-	private final SortActif sort;
+	private final SortVariable<SortActif> sort;
 	private final EtatAction etat;
 	private final Orientation oriAttaque;
 	private final Orientation precOriAttaque;
 	private final boolean critique;
 
-	public Action(GridPoint2 p1, SortActif sort, Orientation oriAttaque, Orientation precOriAttaque, boolean critique) {
+	public Action(GridPoint2 p1, SortVariable<SortActif> sort, Orientation oriAttaque, Orientation precOriAttaque, boolean critique) {
 		this.position = p1;
 		this.sort = sort;
 		this.oriAttaque = oriAttaque;
@@ -34,10 +35,10 @@ public class Action {
 	}
 
 	private EtatAction definirEtat() {
-		if (sort instanceof Deplacer) {
+		if (sort.sort instanceof Deplacer) {
 			return EtatAction.DEPLACEMENT;
 		}
-		if (sort instanceof Orienter) {
+		if (sort.sort instanceof Orienter) {
 			return EtatAction.ROTATION;
 		}
 		return EtatAction.SORT;
@@ -52,7 +53,7 @@ public class Action {
 		return position;
 	}
 
-	public SortActif getSort() {
+	public SortVariable<SortActif> getSort() {
 		return sort;
 	}
 

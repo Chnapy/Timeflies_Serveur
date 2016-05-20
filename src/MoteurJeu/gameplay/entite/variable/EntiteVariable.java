@@ -3,79 +3,88 @@
  * 
  * 
  */
-package MoteurJeu.gameplay.entite;
+package MoteurJeu.gameplay.entite.variable;
 
-import MoteurJeu.general.Array;
-import MoteurJeu.general.Mode;
 import MoteurJeu.gameplay.caracteristique.CaracteristiquePhysique;
+import MoteurJeu.gameplay.entite.classe.ClasseEntite;
 import MoteurJeu.gameplay.caracteristique.CaracteristiqueSpatiale;
 import MoteurJeu.gameplay.effet.Effet;
+import MoteurJeu.gameplay.entite.NiveauSymbolique;
 import MoteurJeu.gameplay.envoutement.Envoutement;
 import MoteurJeu.gameplay.envoutement.EnvoutementEffets;
 import MoteurJeu.gameplay.sort.SortPassif;
 import MoteurJeu.gameplay.sort.SortPassifBonus;
 import MoteurJeu.gameplay.sort.SortPassifEffets;
+import MoteurJeu.gameplay.sort.SortVariable;
+import MoteurJeu.general.Array;
 import MoteurJeu.general.GridPoint2;
+import MoteurJeu.general.Mode;
 import MoteurJeu.general.Orientation;
 import java.util.Observable;
 
 /**
- * Entite.java
- * Représente une entité, visible en combat.
+ * EntiteVariable.java
  *
+ * @param <E>
  */
-public abstract class Entite extends Observable {
+public abstract class EntiteVariable<E extends ClasseEntite> extends Observable {
 
-	//Caractéristiques physiques de l'entité
-	protected final CaracteristiquePhysique caracPhysique;
-
-	//Nom de l'entité
-	protected final String nom;
-
-	//Index pour la vue
-	private final int index;
+	protected final E entite;
 
 	//Etat de l'entité (déplacement, sort, ...) sans prendre en compte les 
 	//actions prévues de la pile d'actions
 	protected Mode etat;
 
-	//Niveau symbolique
-	protected NiveauSymbolique niveauSymbol;
+	//Caractéristiques physiques de l'entité
+	public final CaracteristiquePhysique caracPhysique;
 
 	//Caractéristiques spatiales de l'entité
 	protected CaracteristiqueSpatiale caracSpatiale;
 
-	//Sorts passifs de l'entité
-	protected SortPassif[] tabSortPassif;
+	//Niveau symbolique
+	protected NiveauSymbolique niveauSymbol;
 
 	//Liste des envoutements
 	protected final Array<Envoutement> listEnvoutements;
 
-	/**
-	 *
-	 * @param n
-	 * @param posX
-	 * @param posY
-	 * @param orient
-	 * @param sortsPassifs
-	 * @param caracPhysique
-	 * @param index
-	 */
-	public Entite(String n,
-			int posX, int posY, Orientation orient,
-			SortPassif[] sortsPassifs, CaracteristiquePhysique caracPhysique,
-			int index) {
-		nom = n;
-		caracSpatiale = new CaracteristiqueSpatiale(posX, posY, orient);
-		tabSortPassif = sortsPassifs;
-		this.caracPhysique = caracPhysique;
+	//Sorts passifs de l'entité
+	private final SortVariable<SortPassif>[] tabSortPassifVariable;
+
+	public EntiteVariable(E entite, int initiative) {
+		this.entite = entite;
 		etat = Mode.DEPLACEMENT;
-		this.index = index;
 		listEnvoutements = new Array<Envoutement>();
+		caracPhysique = new CaracteristiquePhysique(entite.caracPhysiqueMax, initiative);
+		tabSortPassifVariable = new SortVariable[entite.tabSortPassif.length];
+		for (int i = 0; i < tabSortPassifVariable.length; i++) {
+			tabSortPassifVariable[i] = new SortVariable<SortPassif>(entite.tabSortPassif[i]);
+		}
 	}
 
-	//Jeu du tour de l'entité
-	public abstract void jouerTour(long time);
+	/**
+	 *
+	 * @return les sort passif de l'entitée
+	 */
+	public SortVariable<SortPassif>[] getTabSortPassif() {
+		return tabSortPassifVariable;
+	}
+
+	public CaracteristiquePhysique getCaracPhysique() {
+		return caracPhysique;
+	}
+
+	public void premiereAction() {
+		for (SortVariable<SortPassif> sort : tabSortPassifVariable) {
+			if (sort.sort instanceof SortPassifBonus) {
+				sort.lancerSort(this, null, null, Orientation.NORD, false);
+			}
+		}
+	}
+
+	public void notifierObserveurs(Object[] envois) {
+		setChanged();
+		notifyObservers(envois);
+	}
 
 	/**
 	 * Recoit un sort d'une entité autre.
@@ -86,11 +95,11 @@ public abstract class Entite extends Observable {
 	 * @param oriAttaque
 	 * @param critique
 	 */
-	public void recoitSort(Effet[] effets, Entite lanceur, Orientation oriAttaque, boolean critique) {
+	public void recoitSort(Effet[] effets, EntiteVariable lanceur, Orientation oriAttaque, boolean critique) {
 		if (lanceur != null) {
-			for (SortPassif sortPassif : tabSortPassif) {
-				if (sortPassif instanceof SortPassifEffets) {
-					((SortPassifEffets) sortPassif).applyEffect(effets, lanceur, this, true, critique);
+			for (SortVariable<SortPassif> sortPassif : tabSortPassifVariable) {
+				if (sortPassif.sort instanceof SortPassifEffets) {
+					((SortPassifEffets) sortPassif.sort).applyEffect(effets, lanceur, this, true, critique);
 				}
 			}
 			for (Envoutement envoutement : listEnvoutements) {
@@ -103,9 +112,9 @@ public abstract class Entite extends Observable {
 			effet.lancerEffetEntite(this, oriAttaque, critique);
 		}
 		if (lanceur != null) {
-			for (SortPassif tabSortPassif1 : tabSortPassif) {
-				if (tabSortPassif1 instanceof SortPassifEffets) {
-					((SortPassifEffets) tabSortPassif1).applyEffect(effets, lanceur, this, false, critique);
+			for (SortVariable<SortPassif> tabSortPassif1 : tabSortPassifVariable) {
+				if (tabSortPassif1.sort instanceof SortPassifEffets) {
+					((SortPassifEffets) tabSortPassif1.sort).applyEffect(effets, lanceur, this, false, critique);
 				}
 			}
 			for (Envoutement envoutement : listEnvoutements) {
@@ -115,6 +124,9 @@ public abstract class Entite extends Observable {
 			}
 		}
 	}
+
+	//Jeu du tour de l'entité
+	public abstract void jouerTour(long time);
 
 	/**
 	 * Change la position
@@ -130,41 +142,8 @@ public abstract class Entite extends Observable {
 		caracSpatiale.move(x, y);
 	}
 
-	public void premiereAction() {
-		for (SortPassif sort : tabSortPassif) {
-			if (sort instanceof SortPassifBonus) {
-				sort.lancerSort(this, null, null, Orientation.NORD, false);
-			}
-		}
-	}
-
-	public void notifierObserveurs(Object[] envois) {
-		setChanged();
-		notifyObservers(envois);
-	}
-
 	public void setCaracSpatiale(CaracteristiqueSpatiale caracSpatiale) {
 		this.caracSpatiale = caracSpatiale;
-	}
-
-	public CaracteristiquePhysique getCaracPhysique() {
-		return caracPhysique;
-	}
-
-	/**
-	 *
-	 * @return niveau symbolique
-	 */
-	public NiveauSymbolique getNiveauSymbol() {
-		return niveauSymbol;
-	}
-
-	/**
-	 *
-	 * @return le nom de l'entité
-	 */
-	public String getNom() {
-		return nom;
 	}
 
 	/**
@@ -177,10 +156,10 @@ public abstract class Entite extends Observable {
 
 	/**
 	 *
-	 * @return les sort passif de l'entitée
+	 * @return niveau symbolique
 	 */
-	public SortPassif[] getTabSortPassif() {
-		return tabSortPassif;
+	public NiveauSymbolique getNiveauSymbol() {
+		return niveauSymbol;
 	}
 
 	/**
@@ -199,10 +178,6 @@ public abstract class Entite extends Observable {
 
 	public void setEtat(Mode etat) {
 		this.etat = etat;
-	}
-
-	public int getIndex() {
-		return index;
 	}
 
 }

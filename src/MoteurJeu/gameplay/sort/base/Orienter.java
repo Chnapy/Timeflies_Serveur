@@ -8,14 +8,13 @@ package MoteurJeu.gameplay.sort.base;
 import MoteurJeu.gameplay.effet.Declencheur;
 import MoteurJeu.gameplay.effet.Effet;
 import MoteurJeu.gameplay.effet.placement.Rotation;
-import MoteurJeu.gameplay.entite.Entite;
-import MoteurJeu.gameplay.entite.EntiteActive;
+import MoteurJeu.gameplay.entite.variable.EntiteActiveVariable;
+import MoteurJeu.gameplay.entite.variable.EntiteVariable;
 import MoteurJeu.gameplay.map.Tuile;
-import MoteurJeu.gameplay.sort.Niveau;
 import MoteurJeu.gameplay.sort.SortActif;
+import MoteurJeu.general.Orientation;
 import MoteurJeu.gameplay.sort.zone.Carre;
 import MoteurJeu.gameplay.sort.zone.ZoneAction;
-import MoteurJeu.general.Orientation;
 
 /**
  * Orienter.java
@@ -26,7 +25,9 @@ public class Orienter extends SortActif {
 	private static final int TEMPS_ACTION = 0;
 
 	public Orienter() {
-		super("Orienter", "Oriente l'entité", new Niveau(0),
+		super(-1, -1,
+				"Orienter", 
+				"Oriente l'entité",
 				new Effet[]{
 					new Effet(new Declencheur[]{
 						new Rotation()
@@ -41,7 +42,7 @@ public class Orienter extends SortActif {
 	}
 
 	@Override
-	public void lancerSort(Entite cible, Tuile cible2, EntiteActive lanceur, Orientation oriAttaque, boolean critique) {
+	public void lancerSort(EntiteVariable cible, Tuile cible2, EntiteActiveVariable lanceur, Orientation oriAttaque, boolean critique) {
 //		System.out.println(cible.getNom());
 		super.lancerSort(cible, cible2, lanceur, oriAttaque, critique);
 		lanceur.notifierObserveurs(new Object[]{

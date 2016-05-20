@@ -6,7 +6,7 @@
 package MoteurJeu.gameplay.effet;
 
 import MoteurJeu.gameplay.caracteristique.Carac;
-import MoteurJeu.gameplay.entite.Entite;
+import MoteurJeu.gameplay.entite.variable.EntiteVariable;
 import MoteurJeu.gameplay.map.Tuile;
 import MoteurJeu.general.Orientation;
 
@@ -23,7 +23,7 @@ public class Balus implements Declencheur {
 	//Valeur du bonus/malus
 	private final int valeur;
 	
-	private Entite cible;
+	private EntiteVariable cible;
 
 	/**
 	 *
@@ -112,14 +112,14 @@ public class Balus implements Declencheur {
 	 * @param _cible
 	 */
 	@Override
-	public void lancerEntite(Entite _cible, Orientation oriLanceur, boolean ccritique) {
+	public void lancerEntite(EntiteVariable _cible, Orientation oriLanceur, boolean ccritique) {
 		cible = _cible;
 		int _valeur = ccritique ? valeur + (30 * valeur / 100) : valeur;
 		cible.getCaracPhysique().add(caracteristique, _valeur);
 	}
 
 	@Override
-	public void lancerTuile(Tuile cible, Entite lanceur, Orientation oriLanceur, boolean ccritique) {
+	public void lancerTuile(Tuile cible, EntiteVariable lanceur, Orientation oriLanceur, boolean ccritique) {
 	}
 
 }

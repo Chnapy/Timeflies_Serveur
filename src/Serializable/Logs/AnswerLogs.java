@@ -33,14 +33,18 @@ public class AnswerLogs implements Serializable {
 
 		private static final long serialVersionUID = 1253542471421658761L;
 
+		public final long idjoueur;
 		public final String pseudo;
 		public int argent;
 		public double ratio;
+		public int niveauS;
 
-		public InfosCompte(String pseudo, int argent, double ratio) {
+		public InfosCompte(long idjoueur, String pseudo, int argent, double ratio) {
+			this.idjoueur = idjoueur;
 			this.pseudo = pseudo;
 			this.argent = argent;
 			this.ratio = ratio;
+			this.niveauS = 0;
 		}
 
 	}

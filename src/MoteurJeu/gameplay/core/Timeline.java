@@ -7,8 +7,8 @@ package MoteurJeu.gameplay.core;
 
 import MoteurJeu.general.Array;
 import MoteurJeu.gameplay.caracteristique.Carac;
-import MoteurJeu.gameplay.entite.Entite;
-import MoteurJeu.gameplay.entite.EntiteActive;
+import MoteurJeu.gameplay.entite.variable.EntiteActiveVariable;
+import MoteurJeu.gameplay.entite.variable.EntiteVariable;
 import java.util.Iterator;
 import java.util.Observable;
 
@@ -30,10 +30,10 @@ public class Timeline extends Observable implements Runnable {
 	private boolean enJeu;
 
 	//Liste des entités actives du jeu
-	private final Array<Entite> listEntite;
+	private final Array<EntiteVariable> listEntite;
 
 	//Entité active jouant actuellement son tour
-	private EntiteActive entiteEnCours;
+	private EntiteActiveVariable entiteEnCours;
 
 	//Etat du tour actuel
 	private Tour etatTour;
@@ -45,7 +45,7 @@ public class Timeline extends Observable implements Runnable {
 	 *
 	 * @param listPersonnages
 	 */
-	public Timeline(Array<? extends Entite> listPersonnages) {
+	public Timeline(Array<? extends EntiteVariable> listPersonnages) {
 		listEntite = new Array(listPersonnages);
 		thread = new Thread(this);
 		etatTour = Tour.ATTENTE;
@@ -139,11 +139,11 @@ public class Timeline extends Observable implements Runnable {
 
 		//Milieu du tour global
 		etatTourGlobal = Tour.COURS;
-		Entite entite;
-		for (Iterator<Entite> it = listEntite.iterator(); it.hasNext();) {
+		EntiteVariable entite;
+		for (Iterator<EntiteVariable> it = listEntite.iterator(); it.hasNext();) {
 			entite = it.next();
-			if (entite instanceof EntiteActive) {
-				entiteEnCours = (EntiteActive) entite;
+			if (entite instanceof EntiteActiveVariable) {
+				entiteEnCours = (EntiteActiveVariable) entite;
 				tour(entiteEnCours);
 			}
 		}
@@ -167,9 +167,9 @@ public class Timeline extends Observable implements Runnable {
 	private void debutTourGlobal() {
 		etatTourGlobal = Tour.DEBUT;
 		appliquerOrdreDeJeu();	//On définit l'ordre de jeu d'après l'initiative de chaque entité active
-		for (Entite entite : listEntite) {
-			if (entite instanceof EntiteActive) {
-				((EntiteActive) entite).debutTourGlobal();
+		for (EntiteVariable entite : listEntite) {
+			if (entite instanceof EntiteActiveVariable) {
+				((EntiteActiveVariable) entite).debutTourGlobal();
 			}
 		}
 	}
@@ -187,9 +187,9 @@ public class Timeline extends Observable implements Runnable {
 	 */
 	private void finTourGlobal() {
 		etatTourGlobal = Tour.FIN;
-		for (Entite entite : listEntite) {
-			if (entite instanceof EntiteActive) {
-				((EntiteActive) entite).finTourGlobal();
+		for (EntiteVariable entite : listEntite) {
+			if (entite instanceof EntiteActiveVariable) {
+				((EntiteActiveVariable) entite).finTourGlobal();
 			}
 		}
 		etatTourGlobal = Tour.ATTENTE;
@@ -206,7 +206,7 @@ public class Timeline extends Observable implements Runnable {
 	 *
 	 * @param entActive
 	 */
-	public void tour(EntiteActive entActive) {
+	public void tour(EntiteActiveVariable entActive) {
 		debutTour(entActive);
 
 		etatTour = Tour.COURS;
@@ -215,7 +215,7 @@ public class Timeline extends Observable implements Runnable {
 		finTour(entActive);
 	}
 
-	private void jouerTour(EntiteActive entActive) {
+	private void jouerTour(EntiteActiveVariable entActive) {
 		long debutTour = System.currentTimeMillis();
 		long palier = debutTour;
 		long time;
@@ -242,7 +242,7 @@ public class Timeline extends Observable implements Runnable {
 	 *
 	 * @param entActive
 	 */
-	private void debutTour(EntiteActive entActive) {
+	private void debutTour(EntiteActiveVariable entActive) {
 		etatTour = Tour.DEBUT;
 
 		entActive.debutTour();
@@ -262,7 +262,7 @@ public class Timeline extends Observable implements Runnable {
 	 *
 	 * @param entActive
 	 */
-	private void finTour(EntiteActive entActive) {
+	private void finTour(EntiteActiveVariable entActive) {
 		etatTour = Tour.FIN;
 		entActive.finTour();
 
@@ -292,7 +292,7 @@ public class Timeline extends Observable implements Runnable {
 		// on initialise la variable initiative
 		int initiative;
 		//la boucle pour initialiser les initiatives
-		for (Entite entite : listEntite) {
+		for (EntiteVariable entite : listEntite) {
 			//calcule de l'initative
 			initiative = entite.getNiveauSymbol().getNiveau() + ((int) (Math.random() * 5));
 			//on set l'initiative des joueurs
@@ -323,7 +323,7 @@ public class Timeline extends Observable implements Runnable {
 	 *
 	 * @param liste
 	 */
-	public static void triRapide(Array<? extends Entite> liste) {
+	public static void triRapide(Array<? extends EntiteVariable> liste) {
 		int longueur = liste.size();
 		triRapide(liste, 0, longueur - 1);
 	}
@@ -336,7 +336,7 @@ public class Timeline extends Observable implements Runnable {
 	 * @param deb
 	 * @param fin
 	 */
-	private static void triRapide(Array<? extends Entite> liste, int deb, int fin) {
+	private static void triRapide(Array<? extends EntiteVariable> liste, int deb, int fin) {
 		if (deb < fin) {
 			int positionPivot = partition(liste, deb, fin);
 			triRapide(liste, deb, positionPivot - 1);
@@ -351,9 +351,9 @@ public class Timeline extends Observable implements Runnable {
 	 * @param fin
 	 * @return pivotPosition
 	 */
-	private static int partition(Array<? extends Entite> liste, int deb, int fin) {
+	private static int partition(Array<? extends EntiteVariable> liste, int deb, int fin) {
 		int compt = deb;
-		Entite pivot = liste.get(deb);
+		EntiteVariable pivot = liste.get(deb);
 
 		for (int i = deb + 1; i <= fin; i++) {
 			if (liste.get(i).getCaracPhysique().get(Carac.INITIATIVE).getActu() < pivot.getCaracPhysique().get(Carac.INITIATIVE).getActu()) {
@@ -370,11 +370,11 @@ public class Timeline extends Observable implements Runnable {
 	 *
 	 * @param entites
 	 */
-	public void addEntite(Entite... entites) {
+	public void addEntite(EntiteVariable... entites) {
 		listEntite.addAll(entites);
 	}
 
-	public EntiteActive getEntiteEnCours() {
+	public EntiteActiveVariable getEntiteEnCours() {
 		return entiteEnCours;
 	}
 
@@ -386,7 +386,7 @@ public class Timeline extends Observable implements Runnable {
 		return etatTourGlobal;
 	}
 
-	public Array<Entite> getListEntites() {
+	public Array<EntiteVariable> getListEntites() {
 		return listEntite;
 	}
 

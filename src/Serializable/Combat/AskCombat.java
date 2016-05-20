@@ -22,11 +22,14 @@ public class AskCombat implements Serializable {
 	}
 	
 	public final TypeCombat type;
-	public final ArrayList<HCPersonnage> persos;
+	public final ArrayList<Long> idPersos;
 	
 	public AskCombat(TypeCombat type, ArrayList<HCPersonnage> persos) {
 		this.type = type;
-		this.persos = persos;
+		this.idPersos = new ArrayList();
+		for(HCPersonnage perso : persos) {
+			idPersos.add(perso.id);
+		}
 	}
 
 }

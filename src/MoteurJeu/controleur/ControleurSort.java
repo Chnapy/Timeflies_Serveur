@@ -5,11 +5,12 @@
  */
 package MoteurJeu.controleur;
 
-import MoteurJeu.gameplay.entite.Entite;
-import MoteurJeu.gameplay.entite.EntiteActive;
+import MoteurJeu.gameplay.entite.variable.EntiteActiveVariable;
+import MoteurJeu.gameplay.entite.variable.EntiteVariable;
 import MoteurJeu.gameplay.map.Map;
 import MoteurJeu.gameplay.map.Tuile;
 import MoteurJeu.gameplay.sort.SortActif;
+import MoteurJeu.gameplay.sort.SortVariable;
 import MoteurJeu.gameplay.sort.pileaction.Action;
 import MoteurJeu.general.GridPoint2;
 import MoteurJeu.general.Orientation;
@@ -23,9 +24,9 @@ public class ControleurSort implements Tourable {
 
 	private final ControleurPrincipal controleurPrincipal;
 
-	private EntiteActive entiteEnCours;
+	private EntiteActiveVariable entiteEnCours;
 
-	private SortActif sortEnCours;
+	private SortVariable<SortActif> sortEnCours;
 
 	public ControleurSort(ControleurPrincipal controleurPrincipal) {
 		this.controleurPrincipal = controleurPrincipal;
@@ -61,41 +62,41 @@ public class ControleurSort implements Tourable {
 		}
 	}
 
-	public void update(EntiteActive entite, Action action, Map map) {
+	public void update(EntiteActiveVariable entite, Action action, Map map) {
 
-		Tuile[] tuilesTouchees = map.getTuilesAction(action.getSort().getZoneAction().getZoneIntermediaire(), new GridPoint2(action.getGridPoint2().x, action.getGridPoint2().y));
+		Tuile[] tuilesTouchees = map.getTuilesAction(action.getSort().sort.getZoneAction().getZoneIntermediaire(), new GridPoint2(action.getGridPoint2().x, action.getGridPoint2().y));
 		for (Tuile t : tuilesTouchees) {
 			lancerSort(entite, action.getSort(), t, action.getOriAttaque(), action.isCritique());
 		}
-		action.getSort().resetCooldown();
+		action.getSort().sort.resetCooldown();
 	}
 
-	public void lancerSort(EntiteActive lanceur, SortActif sort, Tuile tuileCible, Orientation oriAttaque, boolean critique) {
-		Entite persoCible = controleurPrincipal.getPerso(tuileCible);
+	public void lancerSort(EntiteActiveVariable lanceur, SortVariable<SortActif> sort, Tuile tuileCible, Orientation oriAttaque, boolean critique) {
+		EntiteVariable persoCible = controleurPrincipal.getPerso(tuileCible);
 		sort.lancerSort(persoCible, tuileCible, lanceur, oriAttaque, critique);
 	}
 
 	@Override
-	public void nouveauTour(ControleurPrincipal controleur, EntiteActive _entiteEnCours, Object... objs) {
+	public void nouveauTour(ControleurPrincipal controleur, EntiteActiveVariable _entiteEnCours, Object... objs) {
 		entiteEnCours = _entiteEnCours;
 	}
 
 	@Override
-	public void finTour(ControleurPrincipal controleur, EntiteActive entiteEnCours, Object... objs) {
-		for (SortActif sort : entiteEnCours.getTabSortActif()) {
-			sort.subCooldown();
+	public void finTour(ControleurPrincipal controleur, EntiteActiveVariable entiteEnCours, Object... objs) {
+		for (SortVariable<SortActif> sort : entiteEnCours.getTabSortActifVariable()) {
+			sort.sort.subCooldown();
 		}
 	}
 
 	@Override
-	public void enTour(ControleurPrincipal controleur, EntiteActive entiteEnCours, Object... objs) {
+	public void enTour(ControleurPrincipal controleur, EntiteActiveVariable entiteEnCours, Object... objs) {
 	}
 
-	public SortActif getSortEnCours() {
+	public SortVariable<SortActif> getSortEnCours() {
 		return sortEnCours;
 	}
 
-	public void setSortEnCours(SortActif sortEnCours) {
+	public void setSortEnCours(SortVariable<SortActif> sortEnCours) {
 		this.sortEnCours = sortEnCours;
 	}
 

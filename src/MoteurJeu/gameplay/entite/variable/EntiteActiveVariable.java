@@ -3,95 +3,78 @@
  * 
  * 
  */
-package MoteurJeu.gameplay.entite;
+package MoteurJeu.gameplay.entite.variable;
 
-import MoteurJeu.general.Mode;
+import MoteurJeu.gameplay.entite.classe.ClasseEntiteActive;
 import MoteurJeu.gameplay.caracteristique.Carac;
 import MoteurJeu.gameplay.caracteristique.Caracteristique;
-import MoteurJeu.gameplay.caracteristique.CaracteristiquePhysique;
+import MoteurJeu.gameplay.entite.NiveauSymbolique;
 import MoteurJeu.gameplay.envoutement.Envoutement;
-import MoteurJeu.gameplay.sort.Sort;
 import MoteurJeu.gameplay.sort.SortActif;
-import MoteurJeu.gameplay.sort.SortPassif;
+import MoteurJeu.gameplay.sort.SortVariable;
 import MoteurJeu.gameplay.sort.base.Deplacer;
 import MoteurJeu.gameplay.sort.base.Orienter;
 import MoteurJeu.gameplay.sort.pileaction.Action;
 import MoteurJeu.gameplay.sort.pileaction.PileAction;
 import MoteurJeu.general.GridPoint2;
-import MoteurJeu.general.Orientation;
+import MoteurJeu.general.Mode;
 import java.util.Arrays;
 import java.util.stream.Stream;
 
 /**
- * EntiteActive.java
- * Représente une entité active (controlable par un joueur).
- * Joue son tour.
+ * EntiteActiveVariable.java
  *
  */
-public abstract class EntiteActive extends Entite {
-
-	//Tableau des sorts actifs
-	private final SortActif[] tabSortActif;
-
-	private final Orienter orienter;
-
-	private final Deplacer deplacer;
+public class EntiteActiveVariable extends EntiteVariable<ClasseEntiteActive> {
 
 	//Est en train de se déplacer
 	private boolean enDeplacement;
+	
+	private SortVariable<SortActif> orienter;
+	private SortVariable<SortActif> deplacer;
 
 	//Etat de l'entité en prenant en compte les actions prévues de la pile 
 	//d'actions
 	private Mode etatNow;
 
 	//Sort actif en phase d'être lancé
-	private SortActif sortEnCours = null;
+	private SortVariable<SortActif> sortEnCours = null;
+
+	//Tableau des sorts actifs
+	private final SortVariable<SortActif>[] tabSortActifVariable;
 
 	//Temps avant la fin du sort (en ms)
 	private long tempsFinSort = -1;
 	private long timeLeft = -1;
 	private long oldTime = -1;
 
-	//Index de la texture de l'entité sur la timeline
-	private final int indexTextureTimeline;
-
 	//Pile des actions
 	private final PileAction pileAction = new PileAction();
 
-	/**
-	 *
-	 * @param nom
-	 * @param posX
-	 * @param posY
-	 * @param orientation
-	 * @param cPhysique
-	 * @param sortsPassifs
-	 * @param sortsActifs
-	 * @param indexTexture
-	 * @param iTextureTimeline
-	 */
-	public EntiteActive(String nom,
-			int posX, int posY, Orientation orientation,
-			CaracteristiquePhysique cPhysique,
-			SortPassif[] sortsPassifs,
-			SortActif[] sortsActifs,
-			int indexTexture,
-			int iTextureTimeline) {
-
-		super(nom, posX, posY, orientation, sortsPassifs, cPhysique, indexTexture);
-
-		tabSortActif = sortsActifs;
-		niveauSymbol = new NiveauSymbolique(Stream.concat(Arrays.stream(sortsPassifs), Arrays.stream(sortsActifs)).toArray(Sort[]::new));
-		indexTextureTimeline = iTextureTimeline;
-		orienter = new Orienter();
-		deplacer = new Deplacer();
+	public EntiteActiveVariable(ClasseEntiteActive entite, int initiative) {
+		super(entite, initiative);
+		tabSortActifVariable = new SortVariable[entite.tabSortActif.length];
+		for (int i = 0; i < tabSortActifVariable.length; i++) {
+			tabSortActifVariable[i] = new SortVariable<SortActif>(entite.tabSortActif[i]);
+		}
+		niveauSymbol = new NiveauSymbolique(Stream.concat(Arrays.stream(entite.tabSortPassif), Arrays.stream(entite.tabSortActif)).toArray(SortVariable[]::new));
+		orienter = new SortVariable(entite.orienter);
+		deplacer = new SortVariable(entite.deplacer);
 	}
 
-	public Orienter getOrienter() {
+	/**
+	 *
+	 * @return les sort passif de l'entitée
+	 */
+	public SortVariable<SortActif>[] getTabSortActifVariable() {
+		return tabSortActifVariable;
+	}
+
+	public SortVariable<SortActif> getOrienter() {
 		return orienter;
 	}
 
-	public Deplacer getDeplacer() {
+	public SortVariable<SortActif> getDeplacer() {
 		return deplacer;
 	}
 
@@ -116,7 +99,7 @@ public abstract class EntiteActive extends Entite {
 				System.out.println("pileAction.get(0) = " + pileAction.get(0));
 				System.out.println("pileAction.get(0).getEtat() = " + pileAction.get(0).getEtat());
 			}
-			tempsFinSort = pileAction.get(0).getSort().getTempsAction() + time;
+			tempsFinSort = pileAction.get(0).getSort().sort.getTempsAction() + time;
 			setChanged();
 			notifyObservers(pileAction.removeFirst());
 		}
@@ -127,15 +110,53 @@ public abstract class EntiteActive extends Entite {
 			timeLeft -= time - oldTime;
 			oldTime = time;
 		} else {
-			timeLeft = this.caracPhysique.get(Carac.TEMPSACTION).getActu();
+			timeLeft = caracPhysique.get(Carac.TEMPSACTION).getActu();
 		}
 
 	}
-	
-	public int getSortFinalTempsAction(SortActif sort) {
-		float sortTemps = sort.getTempsAction();
+
+	public SortVariable<SortActif> getSortEnCours() {
+		return sortEnCours;
+	}
+
+	public int getSortFinalTempsAction(SortVariable<SortActif> sort) {
+		float sortTemps = sort.sort.getTempsAction();
 		float vitesse = caracPhysique.get(Carac.VITESSEACTION).getActu();
-		return (int)((float)sortTemps / ((float)vitesse / 100));
+		return (int) ((float) sortTemps / ((float) vitesse / 100));
+	}
+
+	public Caracteristique getTempsAction() {
+		return getCaracPhysique().get(Carac.TEMPSACTION);
+	}
+
+	/**
+	 * Défini le sort en cours d'après son index, et le renvoie
+	 *
+	 * @param index
+	 * @return
+	 */
+	public SortVariable<SortActif> setSortEnCours(int index) {
+		sortEnCours = getSort(index);
+		return sortEnCours;
+	}
+
+	/**
+	 * Récupère un sort depuis son index
+	 *
+	 * @param index
+	 * @return
+	 */
+	public SortVariable<SortActif> getSort(int index) {
+		for (SortVariable<SortActif> sort : tabSortActifVariable) {
+			if (sort.sort.getIndex() == index) {
+				return sort;
+			}
+		}
+		throw new IllegalArgumentException();
+	}
+
+	public void addEnvoutement(Envoutement envoutement) {
+		listEnvoutements.add(envoutement);
 	}
 
 	/**
@@ -161,7 +182,7 @@ public abstract class EntiteActive extends Entite {
 	 * @return le temps dispot total avec le temps supplémentaire
 	 */
 	public long tempsDispo() {
-		return timeLeft + this.caracPhysique.get(Carac.TEMPSSUPP).getActu();
+		return timeLeft + caracPhysique.get(Carac.TEMPSSUPP).getActu();
 	}
 
 	/**
@@ -211,7 +232,7 @@ public abstract class EntiteActive extends Entite {
 		pileAction.clear();
 		for (Envoutement envout : listEnvoutements) {
 			envout.finTour();
-			if(envout.subDuree() <= 0) {
+			if (envout.subDuree() <= 0) {
 				envout.finEnvoutement();
 				listEnvoutements.removeValue(envout, false);
 			}
@@ -260,52 +281,6 @@ public abstract class EntiteActive extends Entite {
 			return getCaracSpatiale().getPosition();
 		}
 		return ret;
-	}
-
-	public SortActif[] getTabSortActif() {
-		return tabSortActif;
-	}
-
-	public SortActif getSortEnCours() {
-		return sortEnCours;
-	}
-
-	/**
-	 * Défini le sort en cours d'après son index, et le renvoie
-	 *
-	 * @param index
-	 * @return
-	 */
-	public SortActif setSortEnCours(int index) {
-		sortEnCours = getSort(index);
-		return sortEnCours;
-	}
-
-	/**
-	 * Récupère un sort depuis son index
-	 *
-	 * @param index
-	 * @return
-	 */
-	public SortActif getSort(int index) {
-		for (SortActif sort : tabSortActif) {
-			if (sort.getIndex() == index) {
-				return sort;
-			}
-		}
-		throw new IllegalArgumentException();
-	}
-
-	public int getIndexTextureTimeline() {
-		return indexTextureTimeline;
-	}
-
-	public Caracteristique getTempsAction() {
-		return getCaracPhysique().get(Carac.TEMPSACTION);
-	}
-	
-	public void addEnvoutement(Envoutement envoutement) {
-		listEnvoutements.add(envoutement);
 	}
 
 }

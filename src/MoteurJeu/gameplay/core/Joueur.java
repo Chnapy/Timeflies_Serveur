@@ -5,7 +5,7 @@
  */
 package MoteurJeu.gameplay.core;
 
-import MoteurJeu.gameplay.entite.Personnage;
+import MoteurJeu.gameplay.entite.variable.PersonnageVariable;
 
 /**
  * Joueur.java
@@ -21,7 +21,7 @@ public class Joueur {
 	private String pseudo;
 
 	//Tableau des personnages
-	private Personnage[] personnages;
+	private PersonnageVariable[] personnages;
 
 	/**
 	 *
@@ -29,7 +29,7 @@ public class Joueur {
 	 * @param pseud
 	 * @param personnages
 	 */
-	public Joueur(int _id, String pseud, Personnage[] personnages) {
+	public Joueur(int _id, String pseud, PersonnageVariable[] personnages) {
 		id = _id;
 		pseudo = pseud;
 		this.personnages = personnages;
@@ -43,7 +43,7 @@ public class Joueur {
 		return pseudo;
 	}
 
-	public Personnage[] getPersonnages() {
+	public PersonnageVariable[] getPersonnages() {
 		return personnages;
 	}
 

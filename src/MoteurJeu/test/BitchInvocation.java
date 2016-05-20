@@ -3,14 +3,14 @@ package MoteurJeu.test;
 import MoteurJeu.gameplay.caracteristique.CaracteristiquePhysiqueMax;
 import MoteurJeu.gameplay.effet.Effet;
 import MoteurJeu.gameplay.entite.variable.EntiteVariable;
-import MoteurJeu.gameplay.invocation.ClasseInvocationPassive;
+import MoteurJeu.gameplay.invocation.ClasseInvocationMobile;
 import MoteurJeu.gameplay.map.Tuile;
 import MoteurJeu.general.GridPoint2;
 import MoteurJeu.general.Orientation;
 
-public class InvocationPassiveTest extends ClasseInvocationPassive {
+public class BitchInvocation extends ClasseInvocationMobile {
 
-	public InvocationPassiveTest(int id, String nomClasse, CaracteristiquePhysiqueMax caracPhysique) {
+	public BitchInvocation(int id, String nomClasse, CaracteristiquePhysiqueMax caracPhysique) {
 		super(id,
 				nomClasse,
 				caracPhysique);
@@ -18,6 +18,7 @@ public class InvocationPassiveTest extends ClasseInvocationPassive {
 
 	@Override
 	public void invoquer(GridPoint2 point) {
+
 	}
 
 	@Override

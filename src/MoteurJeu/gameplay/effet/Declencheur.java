@@ -1,6 +1,6 @@
 package MoteurJeu.gameplay.effet;
 
-import MoteurJeu.gameplay.entite.Entite;
+import MoteurJeu.gameplay.entite.variable.EntiteVariable;
 import MoteurJeu.gameplay.map.Tuile;
 import MoteurJeu.general.Orientation;
 
@@ -29,7 +29,7 @@ public interface Declencheur {
 	 * @param oriLanceur
 	 * @param ccritique
 	 */
-	public void lancerEntite(Entite cible, Orientation oriLanceur, boolean ccritique);
+	public void lancerEntite(EntiteVariable cible, Orientation oriLanceur, boolean ccritique);
 
-	public void lancerTuile(Tuile cible, Entite lanceur, Orientation oriLanceur, boolean ccritique);
+	public void lancerTuile(Tuile cible, EntiteVariable lanceur, Orientation oriLanceur, boolean ccritique);
 }

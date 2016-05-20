@@ -3,7 +3,8 @@ package MoteurJeu.gameplay.effet.placement;
 import MoteurJeu.gameplay.caracteristique.CaracteristiqueSpatiale;
 import MoteurJeu.gameplay.effet.Declencheur;
 import MoteurJeu.gameplay.effet.Effet;
-import MoteurJeu.gameplay.entite.Entite;
+import MoteurJeu.gameplay.entite.classe.ClasseEntite;
+import MoteurJeu.gameplay.entite.variable.EntiteVariable;
 import MoteurJeu.gameplay.map.Tuile;
 import MoteurJeu.general.GridPoint2;
 import MoteurJeu.general.Orientation;
@@ -59,12 +60,12 @@ public class Teleportation extends Placement {
 	}
 
 	@Override
-	public void lancerEntite(Entite victime, Orientation oriLanceur, boolean ccritique) {
+	public void lancerEntite(EntiteVariable victime, Orientation oriLanceur, boolean ccritique) {
 		victime.setCaracSpatiale(new CaracteristiqueSpatiale((int) position.x, (int) position.y, victime.getCaracSpatiale().getOrientation()));
 	}
 
 	@Override
-	public void lancerTuile(Tuile cible, Entite lanceur, Orientation oriLanceur, boolean ccritique) {
+	public void lancerTuile(Tuile cible, EntiteVariable lanceur, Orientation oriLanceur, boolean ccritique) {
 		lanceur.setPosition(cible.getPosition());
 	}
 

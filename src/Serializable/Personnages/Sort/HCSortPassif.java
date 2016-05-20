@@ -6,14 +6,14 @@
 package Serializable.Personnages.Sort;
 
 /**
- * SortPassif.java
+ * HCSortPassif.java
  *
  */
-public class SortPassif extends Sort {
+public class HCSortPassif extends HCSort {
 
 	private static final long serialVersionUID = 1176285018320883591L;
 
-	public SortPassif(String nom, Niveau niveau, String description) {
+	public HCSortPassif(String nom, HCNiveau niveau, String description) {
 		super(nom, niveau, description);
 	}
 

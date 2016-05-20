@@ -6,10 +6,8 @@
 package CombatHandler;
 
 import MoteurJeu.gameplay.core.Joueur;
-import MoteurJeu.gameplay.entite.Personnage;
+import MoteurJeu.gameplay.entite.variable.PersonnageVariable;
 import MoteurJeu.gameplay.map.Map;
-import MoteurJeu.test.Guerrier;
-import MoteurJeu.test.Guerrier2;
 import gameplay.map.MapSerializable;
 import java.io.File;
 
@@ -31,11 +29,11 @@ public class CombatStartPack {
 
 		Map map = getTestMap();
 
-		Personnage[] persosJ1 = {
-			new Guerrier()
+		PersonnageVariable[] persosJ1 = {
+//			new Guerrier()
 		};
-		Personnage[] persosJ2 = {
-			new Guerrier2()
+		PersonnageVariable[] persosJ2 = {
+//			new Guerrier2()
 		};
 		Joueur[] joueurs = {
 			new Joueur(5, "J1", persosJ1),

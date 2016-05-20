@@ -5,7 +5,7 @@
  */
 package MoteurJeu.controleur;
 
-import MoteurJeu.gameplay.entite.EntiteActive;
+import MoteurJeu.gameplay.entite.variable.EntiteActiveVariable;
 import MoteurJeu.gameplay.map.Map;
 import MoteurJeu.gameplay.sort.pileaction.Action;
 import MoteurJeu.general.Array;
@@ -23,7 +23,7 @@ public class ControleurDeplacement implements Tourable {
 
 	private final Map map;
 
-	private EntiteActive entiteEnCours;
+	private EntiteActiveVariable entiteEnCours;
 
 	//Chemin (liste de points) de l'entité active à la tuile ciblée
 	private Array<GridPoint2> path;
@@ -75,13 +75,13 @@ public class ControleurDeplacement implements Tourable {
 		controleurPrincipal.controleurSort.setSortEnCours(null);
 	}
 
-	public void update(EntiteActive entite, Action action) {
+	public void update(EntiteActiveVariable entite, Action action) {
 		entite.setEnDeplacement(true);
 		action.getSort().lancerSort(entite, map.getTabTuiles()[action.getGridPoint2().y][action.getGridPoint2().x], entite, action.getOriAttaque(), action.isCritique());
 	}
 
 	@Override
-	public void nouveauTour(ControleurPrincipal controleur, EntiteActive _entiteEnCours, Object... objs) {
+	public void nouveauTour(ControleurPrincipal controleur, EntiteActiveVariable _entiteEnCours, Object... objs) {
 		entiteEnCours = _entiteEnCours;
 		path = null;
 		lastPosFixe = null;
@@ -89,12 +89,12 @@ public class ControleurDeplacement implements Tourable {
 	}
 
 	@Override
-	public void finTour(ControleurPrincipal controleur, EntiteActive entiteEnCours, Object... objs) {
+	public void finTour(ControleurPrincipal controleur, EntiteActiveVariable entiteEnCours, Object... objs) {
 		map.setTuileOccupe(true, entiteEnCours.getCaracSpatiale().getPosition().y, entiteEnCours.getCaracSpatiale().getPosition().x);
 	}
 
 	@Override
-	public void enTour(ControleurPrincipal controleur, EntiteActive entiteEnCours, Object... objs) {
+	public void enTour(ControleurPrincipal controleur, EntiteActiveVariable entiteEnCours, Object... objs) {
 	}
 
 }

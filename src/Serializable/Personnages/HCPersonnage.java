@@ -5,8 +5,8 @@
  */
 package Serializable.Personnages;
 
-import Serializable.Personnages.Sort.SortActif;
-import Serializable.Personnages.Sort.SortPassif;
+import Serializable.Personnages.Sort.HCSortActif;
+import Serializable.Personnages.Sort.HCSortPassif;
 import java.io.Serializable;
 
 /**
@@ -17,7 +17,7 @@ public class HCPersonnage implements Serializable {
 
 	private static final long serialVersionUID = -7290110273359388765L;
 
-	public final int id;
+	public final long id;
 	public final String nom;
 	public final String classe;
 	public final int niveauS;
@@ -26,10 +26,10 @@ public class HCPersonnage implements Serializable {
 	public final int tempsS;
 	public final int vitesse;
 	public final int fatigue;
-	public final SortActif[] sortsActifs;
-	public final SortPassif[] sortsPassifs;
+	public final HCSortActif[] sortsActifs;
+	public final HCSortPassif[] sortsPassifs;
 
-	public HCPersonnage(int id, String nom, String classe, int niveauS, int vitalite, int tempsA, int tempsS, int vitesse, int fatigue, SortActif[] sortsActifs, SortPassif[] sortsPassifs) {
+	public HCPersonnage(long id, String nom, String classe, int niveauS, int vitalite, int tempsA, int tempsS, int vitesse, int fatigue, HCSortActif[] sortsActifs, HCSortPassif[] sortsPassifs) {
 		this.id = id;
 		this.nom = nom;
 		this.classe = classe;

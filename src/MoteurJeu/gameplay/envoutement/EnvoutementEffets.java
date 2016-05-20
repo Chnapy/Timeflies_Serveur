@@ -7,7 +7,8 @@ package MoteurJeu.gameplay.envoutement;
 
 import MoteurJeu.gameplay.effet.Declenchable;
 import MoteurJeu.gameplay.effet.Effet;
-import MoteurJeu.gameplay.entite.Entite;
+import MoteurJeu.gameplay.entite.classe.ClasseEntite;
+import MoteurJeu.gameplay.entite.variable.EntiteVariable;
 
 /**
  * EnvoutementEffets.java
@@ -39,7 +40,7 @@ public abstract class EnvoutementEffets extends Envoutement {
 		listEffets = effets;
 	}
 	
-	public final void applyEffect(Effet[] effets, Entite lanceur, boolean isAvant, boolean ccritique) {
+	public final void applyEffect(Effet[] effets, EntiteVariable lanceur, boolean isAvant, boolean ccritique) {
 		for(Declenchable dec : getListDeclenchables()) {
 			if(dec.canDeclencher(effets)) {
 				actionApplyEffect(lanceur, isAvant, ccritique);
@@ -47,7 +48,7 @@ public abstract class EnvoutementEffets extends Envoutement {
 		}
 	}
 
-	protected abstract void actionApplyEffect(Entite lanceur, boolean isAvant, boolean ccritique);
+	protected abstract void actionApplyEffect(EntiteVariable lanceur, boolean isAvant, boolean ccritique);
 
 	public Declenchable[] getListDeclenchables() {
 		return listDeclenchables;

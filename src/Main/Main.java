@@ -11,7 +11,7 @@ import Connection.storage.TokenBank;
 import Console.Console;
 import Console.utils.ConsoleDisplay;
 import Database.Database;
-import Database.PlaceholderData;
+import Database.InterfaceDatabase;
 import HorsCombat.Controleur.HCControleur;
 
 /**
@@ -36,7 +36,7 @@ public class Main {
 //			Connection.init();
 			Console.initCmd(Connection.getConnectionHandler());
 			
-			PlaceholderData.init();
+			InterfaceDatabase.init();
 		} catch (Exception e) {
 			ConsoleDisplay.error("Failed to initialize. Stopping the program.");
 			ConsoleDisplay.debug(e);

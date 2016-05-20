@@ -6,6 +6,7 @@
 package MoteurJeu.gameplay.entite;
 
 import MoteurJeu.gameplay.sort.Sort;
+import MoteurJeu.gameplay.sort.SortVariable;
 import java.util.Arrays;
 
 /**
@@ -26,7 +27,7 @@ public class NiveauSymbolique {
 	 *
 	 * @param sorts
 	 */
-	public NiveauSymbolique(final Sort[] sorts) {
+	public NiveauSymbolique(final SortVariable[] sorts) {
 		calculNiveau(sorts);
 	}
 
@@ -61,7 +62,7 @@ public class NiveauSymbolique {
 	 * TODO : Prendre en compte le ratio victoires/défaites
 	 *
 	 */
-	private void calculNiveau(final Sort[] sorts) {
+	private void calculNiveau(final SortVariable<Sort>[] sorts) {
 		if (sorts.length == 0) {
 			return;
 		}
@@ -72,7 +73,7 @@ public class NiveauSymbolique {
 		int i, j;
 
 		for (i = 0; i < sorts.length; i++) {
-			tabNiveaux[i] = sorts[i].getNiveau().getNiveauActu();
+			tabNiveaux[i] = sorts[i].sort.getNiveau().getNiveauActu();
 			for (j = 0; j < min.length; j++) {
 				if (min[j] > tabNiveaux[i]) {
 					min[j] = tabNiveaux[i];

@@ -7,7 +7,7 @@ package MoteurJeu.gameplay.sort;
 
 import MoteurJeu.gameplay.effet.Declenchable;
 import MoteurJeu.gameplay.effet.Effet;
-import MoteurJeu.gameplay.entite.Entite;
+import MoteurJeu.gameplay.entite.variable.EntiteVariable;
 
 /**
  * SortPassifEffets.java
@@ -21,18 +21,19 @@ public abstract class SortPassifEffets extends SortPassif {
 
 	/**
 	 *
+	 * @param id
+	 * @param idClasseEntite
 	 * @param nom
 	 * @param description
-	 * @param niveau
 	 * @param effets
 	 * @param declenchables
 	 * @param index
 	 *
 	 */
-	public SortPassifEffets(String nom, String description, Niveau niveau,
-			Effet[] effets, Declenchable[] declenchables,
+	public SortPassifEffets(int id, int idClasseEntite, String nom, String description, Effet[] effets,
+			Declenchable[] declenchables,
 			int index) {
-		super(nom, description, niveau, effets, index);
+		super(id, idClasseEntite, nom, description, effets, index);
 		listDeclenchables = declenchables;
 	}
 
@@ -45,7 +46,7 @@ public abstract class SortPassifEffets extends SortPassif {
 	 * @param isAvant	est lancé avant ou apres l'effet
 	 * @param ccritique
 	 */
-	public void applyEffect(Effet[] effets, Entite lanceur, Entite cible, boolean isAvant, boolean ccritique) {
+	public void applyEffect(Effet[] effets, EntiteVariable lanceur, EntiteVariable cible, boolean isAvant, boolean ccritique) {
 		for(Declenchable dec : getListDeclenchables()) {
 			if(dec.canDeclencher(effets)) {
 				actionApplyEffect(lanceur, cible, isAvant, ccritique);
@@ -53,7 +54,7 @@ public abstract class SortPassifEffets extends SortPassif {
 		}
 	}
 	
-	protected abstract void actionApplyEffect(Entite lanceur, Entite cible, boolean isAvant, boolean ccritique);
+	protected abstract void actionApplyEffect(EntiteVariable lanceur, EntiteVariable cible, boolean isAvant, boolean ccritique);
 
 	public Declenchable[] getListDeclenchables() {
 		return listDeclenchables;

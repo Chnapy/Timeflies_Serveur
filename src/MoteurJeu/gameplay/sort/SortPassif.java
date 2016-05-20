@@ -16,15 +16,16 @@ public abstract class SortPassif extends Sort {
 
 	/**
 	 *
+	 * @param id
+	 * @param idClasseEntite
 	 * @param nom
 	 * @param description
-	 * @param niveau
 	 * @param effets
 	 * @param index
 	 */
-	public SortPassif(String nom, String description, Niveau niveau, Effet[] effets, int index) {
+	public SortPassif(int id, int idClasseEntite, String nom, String description, Effet[] effets, int index) {
 
-		super(nom, description, niveau, effets, index);
+		super(id, idClasseEntite, nom, description, effets, index);
 
 	}
 

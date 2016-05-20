@@ -7,7 +7,8 @@ package MoteurJeu.gameplay.effet.placement;
 
 import MoteurJeu.gameplay.effet.Declencheur;
 import MoteurJeu.gameplay.effet.Effet;
-import MoteurJeu.gameplay.entite.Entite;
+import MoteurJeu.gameplay.entite.classe.ClasseEntite;
+import MoteurJeu.gameplay.entite.variable.EntiteVariable;
 import MoteurJeu.general.Orientation;
 
 /**
@@ -35,6 +36,6 @@ public abstract class Placement implements Declencheur {
 	public abstract boolean canDeclencher(Effet effet, int min, int max);
 
 	@Override
-	public abstract void lancerEntite(Entite victime, Orientation oriLanceur, boolean ccritique);
+	public abstract void lancerEntite(EntiteVariable victime, Orientation oriLanceur, boolean ccritique);
 
 }

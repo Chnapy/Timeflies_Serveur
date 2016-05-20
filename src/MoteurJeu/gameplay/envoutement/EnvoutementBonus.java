@@ -6,7 +6,7 @@
 package MoteurJeu.gameplay.envoutement;
 
 import MoteurJeu.gameplay.caracteristique.Carac;
-import MoteurJeu.gameplay.entite.Entite;
+import MoteurJeu.gameplay.entite.variable.EntiteVariable;
 import MoteurJeu.gameplay.map.Tuile;
 import MoteurJeu.general.Orientation;
 
@@ -78,7 +78,7 @@ public abstract class EnvoutementBonus extends Envoutement {
 	}
 
 	@Override
-	public void lancerTuile(Tuile cible, Entite lanceur, Orientation oriLanceur, boolean ccritique) {
+	public void lancerTuile(Tuile cible, EntiteVariable lanceur, Orientation oriLanceur, boolean ccritique) {
 
 	}
 

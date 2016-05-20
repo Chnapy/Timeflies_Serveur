@@ -5,9 +5,10 @@
  */
 package MoteurJeu.gameplay.sort;
 
+import Console.utils.ConsoleDisplay;
 import MoteurJeu.gameplay.effet.Effet;
-import MoteurJeu.gameplay.entite.Entite;
-import MoteurJeu.gameplay.entite.EntiteActive;
+import MoteurJeu.gameplay.entite.variable.EntiteActiveVariable;
+import MoteurJeu.gameplay.entite.variable.EntiteVariable;
 import MoteurJeu.gameplay.map.Tuile;
 import MoteurJeu.general.Orientation;
 import java.util.Observable;
@@ -18,36 +19,45 @@ import java.util.Observable;
  *
  */
 public abstract class Sort extends Observable {
+	
+	//Id du sort
+	public final int id;
+	
+	//Id classe entité
+	public final int idClasseEntite;
 
 	//Nom du sort
-	private String nom;
+	public final String nom;
 
 	//Description
-	private String description;
+	public final String description;
 
 	//Niveau et expérience
-	private Niveau niveau;
+	public Niveau niveau;
 
 	//Tableau des effets
-	private Effet[] tabEffets;
+	public final Effet[] tabEffets;
 
 	//Index pour la vue
-	private final int index;
+	public final int index;
 
 	/**
 	 *
+	 * @param id
+	 * @param idClasseEntite
 	 * @param nom
 	 * @param description
-	 * @param niveau
 	 * @param effets
 	 * @param i	          pour la vue
 	 */
-	public Sort(String nom, String description, Niveau niveau, Effet[] effets, int i) {
+	public Sort(int id, int idClasseEntite, String nom, String description, Effet[] effets, int i) {
+		this.id = id;
+		this.idClasseEntite = idClasseEntite;
 		this.nom = nom;
 		this.description = description;
-		this.niveau = niveau;
-		tabEffets = effets;
+		this.niveau = new Niveau(0);
 		index = i;
+		tabEffets = effets;
 	}
 
 	/**
@@ -59,7 +69,11 @@ public abstract class Sort extends Observable {
 	 * @param oriAttaque
 	 * @param critique
 	 */
-	public void lancerSort(Entite cibleEntite, Tuile cibleTuile, EntiteActive lanceur, Orientation oriAttaque, boolean critique) {
+	public void lancerSort(EntiteVariable cibleEntite, Tuile cibleTuile, EntiteActiveVariable lanceur, Orientation oriAttaque, boolean critique) {
+		if(tabEffets == null) {
+			ConsoleDisplay.error("Sort " + nom + " lancé avant d'avoir appliqué les effets !");
+			return;
+		}
 		if (cibleEntite != null) {
 			cibleEntite.recoitSort(getTabEffets(), lanceur, oriAttaque, critique);
 		}
@@ -84,6 +98,10 @@ public abstract class Sort extends Observable {
 
 	public int getIndex() {
 		return index;
+	}
+	
+	public boolean isSortActif() {
+		return this instanceof SortActif;
 	}
 
 }

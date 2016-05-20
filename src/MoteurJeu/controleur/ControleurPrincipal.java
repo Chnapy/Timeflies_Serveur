@@ -7,10 +7,10 @@ package MoteurJeu.controleur;
 
 import MoteurJeu.gameplay.core.Joueur;
 import MoteurJeu.gameplay.core.Timeline;
-import MoteurJeu.gameplay.entite.Entite;
-import MoteurJeu.gameplay.entite.EntiteActive;
 import MoteurJeu.general.Mode;
-import MoteurJeu.gameplay.entite.Personnage;
+import MoteurJeu.gameplay.entite.variable.EntiteActiveVariable;
+import MoteurJeu.gameplay.entite.variable.EntiteVariable;
+import MoteurJeu.gameplay.entite.variable.PersonnageVariable;
 import MoteurJeu.gameplay.map.Map;
 import MoteurJeu.gameplay.map.Tuile;
 import MoteurJeu.gameplay.sort.pileaction.Action;
@@ -46,13 +46,13 @@ public class ControleurPrincipal implements Observer, Tourable {
 	//Tableau des joueurs
 	private final Joueur[] tabJoueurs;
 
-	private final Array<Entite> listEntites;
+	private final Array<EntiteVariable> listEntites;
 
 	//Timeline (modele)
 	private final Timeline timeline;
 
 	//Entité jouant son tour
-	private EntiteActive entiteEnCours;
+	private EntiteActiveVariable entiteEnCours;
 
 	private Orientation oriAttaque;
 
@@ -93,7 +93,7 @@ public class ControleurPrincipal implements Observer, Tourable {
 	}
 
 	@Override
-	public void nouveauTour(ControleurPrincipal controleur, EntiteActive entiteEnCours, Object... objs) {
+	public void nouveauTour(ControleurPrincipal controleur, EntiteActiveVariable entiteEnCours, Object... objs) {
 		System.out.println("Nouveau tour");
 		controleurDeplacement.nouveauTour(controleur, entiteEnCours, objs);
 		controleurSort.nouveauTour(controleur, entiteEnCours, objs);
@@ -101,14 +101,14 @@ public class ControleurPrincipal implements Observer, Tourable {
 	}
 
 	@Override
-	public void finTour(ControleurPrincipal controleur, EntiteActive entiteEnCours, Object... objs) {
+	public void finTour(ControleurPrincipal controleur, EntiteActiveVariable entiteEnCours, Object... objs) {
 		System.out.println("Fin tour");
 		controleurDeplacement.finTour(controleur, entiteEnCours, objs);
 		controleurSort.finTour(controleur, entiteEnCours, objs);
 	}
 
 	@Override
-	public void enTour(ControleurPrincipal controleur, EntiteActive entiteEnCours, Object... objs) {
+	public void enTour(ControleurPrincipal controleur, EntiteActiveVariable entiteEnCours, Object... objs) {
 		controleurDeplacement.enTour(controleur, entiteEnCours, objs);
 		controleurSort.enTour(controleur, entiteEnCours, objs);
 	}
@@ -119,8 +119,8 @@ public class ControleurPrincipal implements Observer, Tourable {
 	 * @param joueurs
 	 * @return
 	 */
-	private static Array<Personnage> getPersonnages(Joueur[] joueurs) {
-		Array<Personnage> listEntActive = new Array<Personnage>();
+	private static Array<PersonnageVariable> getPersonnages(Joueur[] joueurs) {
+		Array<PersonnageVariable> listEntActive = new Array<PersonnageVariable>();
 		for (Joueur j : joueurs) {
 			listEntActive.addAll(j.getPersonnages());
 		}
@@ -153,7 +153,7 @@ public class ControleurPrincipal implements Observer, Tourable {
 	 *
 	 * Lance les actions sorts/déplacements
 	 *
-	 * @param o	  Timeline EntiteActive
+	 * @param o	  Timeline ClasseEntiteActive
 	 * @param arg
 	 */
 	@Override
@@ -172,8 +172,8 @@ public class ControleurPrincipal implements Observer, Tourable {
 					finTour(this, entiteEnCours);
 					break;
 			}
-		} else if (o instanceof EntiteActive) {
-			EntiteActive entite = (EntiteActive) o;
+		} else if (o instanceof EntiteActiveVariable) {
+			EntiteActiveVariable entite = (EntiteActiveVariable) o;
 			if (arg instanceof Action) {
 				Action action = (Action) arg;
 				if (action.getEtat() == Action.EtatAction.DEPLACEMENT) {
@@ -193,8 +193,8 @@ public class ControleurPrincipal implements Observer, Tourable {
 	 * @param tuile
 	 * @return le personnage présent sur la tuile. null si vide
 	 */
-	public Entite getPerso(Tuile tuile) {
-		for (Entite entite : listEntites) {
+	public EntiteVariable getPerso(Tuile tuile) {
+		for (EntiteVariable entite : listEntites) {
 			if (entite.getCaracSpatiale().getPosition().equals(tuile.getPosition())) {
 				return entite;
 			}
@@ -249,7 +249,7 @@ public class ControleurPrincipal implements Observer, Tourable {
 		}
 	}
 
-	public void addEntite(Entite entite) {
+	public void addEntite(EntiteVariable entite) {
 		timeline.addEntite(entite);
 		listEntites.add(entite);
 		entite.addObserver(this);

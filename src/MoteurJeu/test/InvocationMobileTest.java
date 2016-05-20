@@ -5,13 +5,11 @@
  */
 package MoteurJeu.test;
 
-import MoteurJeu.gameplay.caracteristique.CaracteristiquePhysique;
+import MoteurJeu.gameplay.caracteristique.CaracteristiquePhysiqueMax;
 import MoteurJeu.gameplay.effet.Effet;
-import MoteurJeu.gameplay.entite.Entite;
-import MoteurJeu.gameplay.invocation.InvocationMobile;
+import MoteurJeu.gameplay.entite.variable.EntiteVariable;
+import MoteurJeu.gameplay.invocation.ClasseInvocationMobile;
 import MoteurJeu.gameplay.map.Tuile;
-import MoteurJeu.gameplay.sort.SortActif;
-import MoteurJeu.gameplay.sort.SortPassif;
 import MoteurJeu.general.GridPoint2;
 import MoteurJeu.general.Orientation;
 
@@ -19,25 +17,16 @@ import MoteurJeu.general.Orientation;
  * InvocationMobileTest.java
  * 
  */
-public class InvocationMobileTest extends InvocationMobile {
+public class InvocationMobileTest extends ClasseInvocationMobile {
 
-	public InvocationMobileTest() {
-		super("Invoc. mobile", 
-				0, 
-				0, 
-				Orientation.NORD, 
-				new SortPassif[]{}, 
-				new SortActif[] {
-					new SortQuiFaitMal()
-				}, 
-				new CaracteristiquePhysique(110, 13000, 1500, 0, 100),
-				1, 
-				1);
+	public InvocationMobileTest(int id, String nomClasse, CaracteristiquePhysiqueMax caracPhysique) {
+		super(id,
+				nomClasse, 
+				caracPhysique);
 	}
 
 	@Override
 	public void invoquer(GridPoint2 point) {
-		getCaracSpatiale().getPosition().set(point);
 	}
 
 	@Override
@@ -46,11 +35,11 @@ public class InvocationMobileTest extends InvocationMobile {
 	}
 
 	@Override
-	public void lancerEntite(Entite cible, Orientation oriLanceur, boolean ccritique) {
+	public void lancerEntite(EntiteVariable cible, Orientation oriLanceur, boolean ccritique) {
 	}
 
 	@Override
-	public void lancerTuile(Tuile cible, Entite lanceur, Orientation oriLanceur, boolean ccritique) {
+	public void lancerTuile(Tuile cible, EntiteVariable lanceur, Orientation oriLanceur, boolean ccritique) {
 	}
 
 }
