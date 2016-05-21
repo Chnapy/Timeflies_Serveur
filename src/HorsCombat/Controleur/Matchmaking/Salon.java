@@ -29,14 +29,25 @@ public class Salon {
 		this.nomMap = nomMap;
 	}
 
+	public int removeClient(Client client) {
+		for (PlayableClient pc : pclients) {
+			pc.client.sendToClient(new InfosCombat.RmJoueur(pc.donneesJoueur.id));
+			if (pc.client == client) {
+				pclients.remove(pc);
+			}
+		}
+		return pclients.size();
+	}
+
 	public void addClient(Client client, DonneeJoueur dj) {
+		client.salon = this;
 		PlayableClient p = new PlayableClient(client, dj);
 		pclients.add(p);
 		pclients.stream().forEach((pc) -> {
 			if (pc != p) {
-				pc.client.sendToServer(new InfosCombat.NewJoueur(dj));
+				pc.client.sendToClient(new InfosCombat.NewJoueur(dj));
 			} else {
-				p.client.sendToServer(new InfosCombat.PartieTrouvee(getAllDonnees(), nomMap));
+				p.client.sendToClient(new InfosCombat.PartieTrouvee(getAllDonnees(), nomMap));
 			}
 		});
 	}
@@ -55,6 +66,25 @@ public class Salon {
 
 	public boolean isFull() {
 		return !(pclients.size() < MAXCLIENTS);
+	}
+
+	public boolean isAllReady() {
+		for (PlayableClient pc : pclients) {
+			if (!pc.pret) {
+				return false;
+			}
+		}
+		return true;
+	}
+
+	public void newPret(InfosCombat.EstPret estPret, Client client) {
+		pclients.stream().forEach((pc) -> {
+			if (pc.client != client) {
+				pc.client.sendToClient(estPret);
+			} else {
+				pc.pret = estPret.pret;
+			}
+		});
 	}
 
 	public static class PlayableClient {

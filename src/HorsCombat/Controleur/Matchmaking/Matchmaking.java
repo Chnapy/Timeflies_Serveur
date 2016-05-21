@@ -12,6 +12,7 @@ import static General.utils.ThreadManager.EXEC;
 import HorsCombat.Modele.Client.Client;
 import Serializable.Combat.AskCombat;
 import Serializable.Combat.AskCombat.TypeCombat;
+import Serializable.Combat.InfosCombat;
 import Serializable.Combat.InfosCombat.DonneeJoueur;
 import Serializable.Combat.InfosCombat.DonneePerso;
 import java.sql.ResultSet;
@@ -34,6 +35,17 @@ public class Matchmaking {
 		EXEC.submit(moteur);
 	}
 
+	public static void removeClient(Client client, Salon salon) {
+		int size = salon.removeClient(client);
+		if (size == 0) {
+			removeSalon(salon);
+		}
+	}
+
+	public static void removeSalon(Salon salon) {
+		salons.remove(salon);
+	}
+
 	public static void addNewClient(Client client, AskCombat pack) {
 		ArrayList<DonneePerso> ldp = new ArrayList();
 		pack.idPersos.forEach((id) -> {
@@ -47,7 +59,7 @@ public class Matchmaking {
 				Logger.getLogger(Matchmaking.class.getName()).log(Level.SEVERE, null, ex);
 			}
 		});
-		DonneeJoueur dj = new DonneeJoueur(client.infosCompte.niveauS, client.infosCompte.pseudo, false, ldp);
+		DonneeJoueur dj = new DonneeJoueur(client.infosCompte.idjoueur, client.infosCompte.niveauS, client.infosCompte.pseudo, false, ldp);
 		switch (pack.type) {
 			case SOLO:
 				clientToSolo(client, dj);
@@ -95,6 +107,13 @@ public class Matchmaking {
 //		}
 //		
 //		Combat c = new Combat(new CombatStartPack(CombatStartPack.getTestMap(), null));
+	}
+
+	public static void newPret(InfosCombat.EstPret estPret, Client client, Salon salon) {
+		salon.newPret(estPret, client);
+		if(salon.isAllReady()) {
+			lancerCombat(salon);
+		}
 	}
 
 //	private static ClassePersonnage getPersonnage(HCPersonnage hcp) {

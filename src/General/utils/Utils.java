@@ -3,6 +3,7 @@ package General.utils;
 import java.io.UnsupportedEncodingException;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
+import java.text.SimpleDateFormat;
 
 /**
  * Utils.java
@@ -10,6 +11,8 @@ import java.security.NoSuchAlgorithmException;
  *
  */
 public class Utils {
+
+	public static final SimpleDateFormat TIMEFORMAT = new SimpleDateFormat("dd-MM-yy HH:mm:ss");
 
 	public static String sha1(String message) {
 		String digest = null;

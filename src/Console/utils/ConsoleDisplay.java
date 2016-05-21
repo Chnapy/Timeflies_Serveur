@@ -1,5 +1,8 @@
 package Console.utils;
 
+import java.sql.Timestamp;
+import static General.utils.Utils.TIMEFORMAT;
+
 /**
  * @author alexandre
  * ConsoleDisplay.java
@@ -17,10 +20,9 @@ public class ConsoleDisplay {
 	 * Displays program's "splash screen".
 	 */
 	public static void splash() {
-		System.out.println();
-		System.out.println(PROGRAM_NAME + " v" + VERSION + ".");
-		System.out.println("By " + AUTHOR + " 2015, all rights reserved.");
-		System.out.println();
+		println("\n" + PROGRAM_NAME + " v" + VERSION + "."
+				+ "\nBy " + AUTHOR + " 2015, all rights reserved."
+				+ "\n");
 	}
 
 	/**
@@ -30,7 +32,7 @@ public class ConsoleDisplay {
 	 *               Text to display.
 	 */
 	public static void error(String notice) {
-		System.err.println(notice);
+		errln(notice);
 	}
 
 	/**
@@ -40,7 +42,7 @@ public class ConsoleDisplay {
 	 *               Text to display.
 	 */
 	public static void notice(String notice) {
-		System.out.println(notice);
+		println(notice);
 	}
 
 	/**
@@ -51,7 +53,7 @@ public class ConsoleDisplay {
 	 * @param elementName
 	 */
 	public static void start(String elementName) {
-		System.out.print("Starting " + elementName + "...\t\t\t\t");
+		print("Starting " + elementName + "...\t\t\t\t");
 	}
 
 	public static void success() {
@@ -59,7 +61,7 @@ public class ConsoleDisplay {
 	}
 
 	public static void fail() {
-		System.out.println("[FAIL]");
+		System.err.println("[FAIL]");
 	}
 
 	/**
@@ -81,7 +83,7 @@ public class ConsoleDisplay {
 	 */
 	public static void debug(String s) {
 		if (debug) {
-			System.out.println("Debug : " + s);
+			println("Debug : " + s);
 		}
 	}
 
@@ -94,6 +96,27 @@ public class ConsoleDisplay {
 		if (debug) {
 			e.printStackTrace();
 		}
+	}
+
+	private static void println(String text) {
+		if (text.isEmpty()) {
+			System.out.println();
+		} else {
+			print(text + "\n");
+		}
+	}
+
+	private static void print(String text) {
+		System.out.print(getConsoleText(text));
+	}
+
+	private static void errln(String text) {
+		System.err.println(getConsoleText(text));
+	}
+
+	private static String getConsoleText(String text) {
+		String date = TIMEFORMAT.format(new Timestamp(System.currentTimeMillis()));
+		return "[" + date + "] " + text;
 	}
 
 }

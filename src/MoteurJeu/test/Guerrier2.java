@@ -6,14 +6,14 @@
 package MoteurJeu.test;
 
 import MoteurJeu.gameplay.caracteristique.CaracteristiquePhysiqueMax;
-import MoteurJeu.gameplay.entite.classe.ClasseEntiteActive;
+import MoteurJeu.gameplay.entite.classe.ClassePersonnage;
 
 /**
  * Guerrier.java
  * CLASSE DE TEST
  *
  */
-public class Guerrier2 extends ClasseEntiteActive {
+public class Guerrier2 extends ClassePersonnage {
 
 	private static final int INDEX_TEXTURE = 1;
 	private static final int INDEX_TEXTURE_TIMELINE = 1;

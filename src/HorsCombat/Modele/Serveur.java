@@ -5,6 +5,7 @@
  */
 package HorsCombat.Modele;
 
+import Console.utils.ConsoleDisplay;
 import static General.utils.ThreadManager.EXEC;
 import HorsCombat.Modele.Client.Client;
 import java.io.IOException;
@@ -25,19 +26,19 @@ public class Serveur {
 
 	private ServerSocket s;
 	public final ArrayList<Client> allClients;
-	private long id = 0;
+	private long idReseauClients = 0;
 
 	public Serveur() {
 		allClients = new ArrayList();
 		try {
 			s = new ServerSocket(PORT);
 			isAlive = true;
-			System.out.println("Socket serveur: " + s);
+			ConsoleDisplay.notice("Socket serveur: " + s);
 
 			ServNewClients snc = new ServNewClients(s);
 			EXEC.submit(snc);
 
-			System.out.println("Serveur lancé");
+			ConsoleDisplay.notice("Serveur lancé");
 		} catch (IOException ex) {
 			Logger.getLogger(Serveur.class.getName()).log(Level.SEVERE, null, ex);
 		}
@@ -48,7 +49,7 @@ public class Serveur {
 	}
 
 	public void stopServeur() {
-		System.out.println("Arrêt du serveur (3s) ...");
+		ConsoleDisplay.notice("Arrêt du serveur ...");
 		isAlive = false;
 		try {
 			Thread.sleep(TIMEOUT);
@@ -74,18 +75,18 @@ public class Serveur {
 
 		@Override
 		public void run() {
-			System.out.println("Attente de nouveaux clients...");
+			ConsoleDisplay.notice("Attente de nouveaux clients...");
 			while (isAlive) {
 				try {
-					Client sc = new Client(s.accept(), id);
-					id++;
+					Client sc = new Client(s.accept(), idReseauClients);
+					idReseauClients++;
 					allClients.add(sc);
 					EXEC.submit(sc.servClient);
 				} catch (IOException ex) {
 					System.err.println("bug snc" + isAlive);
 				}
 			}
-			System.out.println("Attente des clients stoppée");
+			ConsoleDisplay.notice("Attente des clients stoppée");
 		}
 
 	}

@@ -6,7 +6,7 @@
 package MoteurJeu.test;
 
 import MoteurJeu.gameplay.caracteristique.CaracteristiquePhysiqueMax;
-import MoteurJeu.gameplay.entite.classe.ClasseEntiteActive;
+import MoteurJeu.gameplay.entite.classe.ClassePersonnage;
 import MoteurJeu.gameplay.sort.SortActif;
 import MoteurJeu.gameplay.sort.SortPassif;
 
@@ -15,7 +15,7 @@ import MoteurJeu.gameplay.sort.SortPassif;
  * CLASSE DE TEST
  *
  */
-public class Guerrier extends ClasseEntiteActive {
+public class Guerrier extends ClassePersonnage {
 
 	private static final int INDEX_TEXTURE = 0;
 	private static final int INDEX_TEXTURE_TIMELINE = 0;

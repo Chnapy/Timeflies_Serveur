@@ -32,6 +32,16 @@ public class InterfaceDatabase {
 //		System.out.println(id);
 	}
 	
+	public static ResultSet getAllClasseSortFromEntite(int idClasseEntite) {
+		ResultSet rs = null;
+		try {
+			rs = DBMapper.executeQuery("select * from classesort where idclasseentite=?", SELECT, idClasseEntite);
+		} catch (SQLException ex) {
+			Logger.getLogger(InterfaceDatabase.class.getName()).log(Level.SEVERE, null, ex);
+		}
+		return rs;
+	}
+	
 	public static long getIdJoueur(String pseudo) {
 		long id = -1;
 		try {

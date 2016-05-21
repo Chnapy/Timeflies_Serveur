@@ -13,6 +13,7 @@ import MoteurJeu.gameplay.caracteristique.CaracteristiquePhysiqueMax;
 import MoteurJeu.gameplay.entite.classe.ClasseEntite;
 import MoteurJeu.gameplay.entite.classe.ClasseEntiteActive;
 import MoteurJeu.gameplay.entite.classe.ClasseEntitePassive;
+import MoteurJeu.gameplay.entite.classe.ClassePersonnage;
 import MoteurJeu.gameplay.sort.Sort;
 import MoteurJeu.gameplay.sort.SortActif;
 import MoteurJeu.gameplay.sort.SortPassif;
@@ -64,7 +65,7 @@ public class InitialData {
 			switch (rs.getInt("type")) {
 				case 0:
 					allEntites.put(rs.getInt("idclasse"),
-							new ClasseEntiteActive(rs.getInt("idclasse"), rs.getString("nom"), cpm));
+							new ClassePersonnage(rs.getInt("idclasse"), rs.getString("nom"), cpm));
 					break;
 				case 1:
 					allEntites.put(rs.getInt("idclasse"),
