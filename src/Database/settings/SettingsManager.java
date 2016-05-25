@@ -7,17 +7,13 @@ import javax.xml.parsers.DocumentBuilderFactory;
 
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
-import Connection.settings.NetworkSettings;
 
 import Console.utils.ConsoleDisplay;
 
 public class SettingsManager {
 
-	private final static boolean LOAD_DEAFAULT_SETTINGS = true;
-
 	private final static String DBSETTINGS_FNAME = "DBLogs.xml";
 
-	private static NetworkSettings networkSettings;
 	private static DataBaseSettings dbSettings;
 
 	private static String path;
@@ -29,22 +25,12 @@ public class SettingsManager {
 
 			loadDBSettings();
 
-			if (LOAD_DEAFAULT_SETTINGS) {
-				networkSettings = new NetworkSettings();
-			} else {
-
-			}
-
 		} catch (Exception e) {
 			ConsoleDisplay.fail();
 			throw e;
 		}
 
 		ConsoleDisplay.success();
-	}
-
-	public static NetworkSettings getNetworkSettings() {
-		return networkSettings;
 	}
 
 	public static DataBaseSettings getDataBaseSettings() {

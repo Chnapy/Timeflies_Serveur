@@ -1,7 +1,7 @@
 package Console.utils;
 
 import java.sql.Timestamp;
-import static General.utils.Utils.TIMEFORMAT;
+import static Main.Utils.TIMEFORMAT;
 
 /**
  * @author alexandre

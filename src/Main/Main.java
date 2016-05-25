@@ -5,13 +5,10 @@
  */
 package Main;
 
-import CombatHandler.CombatHandler;
-import Connection.Connection;
-import Connection.storage.TokenBank;
 import Console.Console;
 import Console.utils.ConsoleDisplay;
 import Database.Database;
-import Database.InterfaceDatabase;
+import HorsCombat.Modele.InterfacesBD.InterfaceBDAdmin;
 import HorsCombat.Controleur.HCControleur;
 
 /**
@@ -30,13 +27,10 @@ public class Main {
 		try {
 			Console.init(args);
 			Database.init();
-			TokenBank.init();
-			CombatHandler.init();
 			HCControleur.init();
-//			Connection.init();
-			Console.initCmd(Connection.getConnectionHandler());
+			Console.initCmd();
 			
-			InterfaceDatabase.init();
+			InterfaceBDAdmin.init();
 		} catch (Exception e) {
 			ConsoleDisplay.error("Failed to initialize. Stopping the program.");
 			ConsoleDisplay.debug(e);

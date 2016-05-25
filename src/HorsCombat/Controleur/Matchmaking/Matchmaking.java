@@ -5,18 +5,13 @@
  */
 package HorsCombat.Controleur.Matchmaking;
 
-import CombatHandler.Combat.Combat;
-import Console.utils.ConsoleDisplay;
-import static Database.InterfaceDatabase.getPersoNivClasse;
-import static General.utils.ThreadManager.EXEC;
-import HorsCombat.Modele.Client.Client;
-import Serializable.Combat.AskCombat;
-import Serializable.Combat.AskCombat.TypeCombat;
-import Serializable.Combat.InfosCombat;
-import Serializable.Combat.InfosCombat.DonneeJoueur;
-import Serializable.Combat.InfosCombat.DonneePerso;
-import java.sql.ResultSet;
-import java.sql.SQLException;
+import HorsCombat.Modele.MapsData;
+import static Main.ThreadManager.EXEC;
+import HorsCombat.Modele.Reseau.Client;
+import Serializable.HorsCombat.HorsCombat.DonneeJoueur;
+import Serializable.HorsCombat.HorsCombat.TypeCombat;
+import Serializable.HorsCombat.Map.MapSerializable;
+import Serializable.HorsCombat.SalonCombat;
 import java.util.ArrayList;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -28,7 +23,6 @@ import java.util.logging.Logger;
 public class Matchmaking {
 
 	private static final ArrayList<Salon> salons = new ArrayList();
-	private static final ArrayList<Combat> combats = new ArrayList();
 	private static final MoteurMM moteur = new MoteurMM();
 
 	public static void init() {
@@ -46,44 +40,16 @@ public class Matchmaking {
 		salons.remove(salon);
 	}
 
-	public static void addNewClient(Client client, AskCombat pack) {
-		ArrayList<DonneePerso> ldp = new ArrayList();
-		pack.idPersos.forEach((id) -> {
-			try {
-				ResultSet rs = getPersoNivClasse(id);
-				if (!rs.next()) {
-					ConsoleDisplay.error("Perso introuvable " + id);
-				}
-				ldp.add(new DonneePerso(getNiveau(rs.getInt("victoires"), rs.getInt("defaites")), rs.getString("nom")));
-			} catch (SQLException ex) {
-				Logger.getLogger(Matchmaking.class.getName()).log(Level.SEVERE, null, ex);
-			}
-		});
-		DonneeJoueur dj = new DonneeJoueur(client.infosCompte.idjoueur, client.infosCompte.niveauS, client.infosCompte.pseudo, false, ldp);
-		switch (pack.type) {
-			case SOLO:
-				clientToSolo(client, dj);
-				break;
-		}
-	}
-
-	private static int getNiveau(int victoires, int defaites) {
-		if (defaites == 0) {
-			return victoires;
-		}
-		return (int) (victoires / defaites);
-	}
-
-	public static void clientToSolo(Client client, DonneeJoueur dj) {
-		Salon s = getBestSalon(TypeCombat.SOLO);
+	public static void clientToSalon(TypeCombat type, Client client, DonneeJoueur dj) {
+		Salon s = getBestSalon(type);
 		if (s == null) {
-			s = createSalon(TypeCombat.SOLO, "testMap");
+			s = createSalon(type, MapsData.getRandomMap());
 		}
 		s.addClient(client, dj);
 	}
 
-	private static Salon createSalon(TypeCombat type, String nomMap) {
-		Salon sa = new Salon(type, nomMap);
+	private static Salon createSalon(TypeCombat type, MapSerializable mapS) {
+		Salon sa = new Salon(type, mapS);
 		salons.add(sa);
 		return sa;
 	}
@@ -100,31 +66,16 @@ public class Matchmaking {
 	}
 
 	private static void lancerCombat(Salon s) {
-//		Joueur[] joueurs = new Joueur[s.pclients.size()];
-//		ClassePersonnage[] persos = new ClassePersonnage[s.pclients.get(0).persos.size()];
-//		for(int i = 0; i < persos.length; i++) {
-//			persos[i] = getPersonnage(s.pclients.get(0).persos.get(i));
-//		}
-//		
-//		Combat c = new Combat(new CombatStartPack(CombatStartPack.getTestMap(), null));
+
 	}
 
-	public static void newPret(InfosCombat.EstPret estPret, Client client, Salon salon) {
-		salon.newPret(estPret, client);
-		if(salon.isAllReady()) {
-			lancerCombat(salon);
+	public static void newPret(SalonCombat.EstPret estPret, Client client) {
+		client.salon.newPret(estPret, client);
+		if (client.salon.isAllReady()) {
+			lancerCombat(client.salon);
 		}
 	}
 
-//	private static ClassePersonnage getPersonnage(HCPersonnage hcp) {
-//		
-//		ClassePersonnage p;
-//		CaracteristiquePhysique cp = new CaracteristiquePhysique(hcp.vitalite, hcp.tempsA, hcp.tempsS, hcp.fatigue, hcp.vitesse);
-//		SortActif[] sas = new SortActif[hcp.sortsActifs.length];
-//		hcp.sortsActifs[0].
-//		p = new ClassePersonnage(hcp.nom, hcp.classe, 0, 0, Orientation.EST, cp)
-//		
-//	}
 	private static class MoteurMM implements Runnable {
 
 		private static final int INTERVAL = 5000;

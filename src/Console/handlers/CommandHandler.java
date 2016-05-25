@@ -1,13 +1,10 @@
 package Console.handlers;
 
-import CombatHandler.CombatHandlerRun;
-import Connection.handlers.ConnectionsHandler;
 import java.util.HashMap;
 
 import Console.handlers.commands.Command;
 import Console.handlers.commands.impl.PortCmd;
 import Console.handlers.commands.impl.StopCmd;
-import Console.handlers.commands.impl.TokenListCmd;
 import Console.utils.ConsoleDisplay;
 import Console.utils.ConsoleInput;
 
@@ -19,26 +16,22 @@ public class CommandHandler implements Runnable {
 
 	private ConsoleInput cInput;
 
-	private ConnectionsHandler connectionHandler;
 	private HashMap<String, Command> commands;
 	private boolean cont;
 
-	public CommandHandler(ConnectionsHandler ch) {
+	public CommandHandler() {
 		cInput = ConsoleInput.getCurrentInst();
-		this.connectionHandler = ch;
 		commands = new HashMap<String, Command>();
 		initCommand();
 		cont = true;
 	}
 
 	private void initCommand() {
-		StopCmd stop = new StopCmd(connectionHandler, this);
+		StopCmd stop = new StopCmd(this);
 		PortCmd port = new PortCmd();
-		TokenListCmd tok = new TokenListCmd();
 
 		commands.put(stop.getCommandTrigger(), stop);
 		commands.put(port.getCommandTrigger(), port);
-		commands.put(tok.getCommandTrigger(), tok);
 	}
 
 	private void handle() {

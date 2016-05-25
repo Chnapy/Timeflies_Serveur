@@ -5,11 +5,10 @@
  */
 package Console;
 
-import Connection.handlers.ConnectionsHandler;
 import Console.handler.args.ArgsHandler;
 import Console.handlers.CommandHandler;
 import Console.utils.ConsoleInput;
-import static General.utils.ThreadManager.EXEC;
+import static Main.ThreadManager.EXEC;
 
 /**
  * Console.java
@@ -22,8 +21,8 @@ public class Console {
 		ConsoleInput.init();
 	}
 
-	public static void initCmd(ConnectionsHandler connectionHandler) {
-		CommandHandler cmdHandler = new CommandHandler(connectionHandler);
+	public static void initCmd() {
+		CommandHandler cmdHandler = new CommandHandler();
 		EXEC.submit(cmdHandler);
 	}
 

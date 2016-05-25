@@ -1,8 +1,8 @@
 package Console.handlers.commands.impl;
 
 import Console.handlers.commands.Command;
-import Database.settings.SettingsManager;
 import Console.utils.ConsoleDisplay;
+import Main.Data;
 
 /**
  * @author alexandre
@@ -14,7 +14,7 @@ public class PortCmd extends Command {
 
 	@Override
 	public void handle(String[] args) {
-		ConsoleDisplay.notice("Current port : " + SettingsManager.getNetworkSettings().getPort());
+		ConsoleDisplay.notice("Current port : " + Data.SERV_PORT);
 	}
 
 	@Override

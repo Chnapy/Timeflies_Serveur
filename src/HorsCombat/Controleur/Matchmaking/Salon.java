@@ -5,11 +5,13 @@
  */
 package HorsCombat.Controleur.Matchmaking;
 
-import HorsCombat.Modele.Client.Client;
-import Serializable.Combat.AskCombat;
-import Serializable.Combat.InfosCombat;
-import Serializable.Combat.InfosCombat.DonneeJoueur;
+import HorsCombat.Modele.Reseau.Client;
+import Serializable.HorsCombat.HorsCombat.DonneeJoueur;
+import Serializable.HorsCombat.Map.MapSerializable;
+import Serializable.HorsCombat.SalonCombat;
+import Serializable.HorsCombat.SalonCombat.AskCombat;
 import java.util.ArrayList;
+import java.util.Iterator;
 
 /**
  * Salon.java
@@ -19,23 +21,26 @@ public class Salon {
 
 	public static final int MAXCLIENTS = 8;
 
-	public final String nomMap;
+	public final MapSerializable mapS;
 	public final AskCombat.TypeCombat type;
 	public final ArrayList<PlayableClient> pclients;
 
-	public Salon(AskCombat.TypeCombat type, String nomMap) {
+	public Salon(AskCombat.TypeCombat type, MapSerializable mapS) {
 		this.type = type;
 		this.pclients = new ArrayList();
-		this.nomMap = nomMap;
+		this.mapS = mapS;
 	}
 
 	public int removeClient(Client client) {
-		for (PlayableClient pc : pclients) {
-			pc.client.sendToClient(new InfosCombat.RmJoueur(pc.donneesJoueur.id));
+		PlayableClient pc;
+		for (Iterator<PlayableClient> ite = pclients.iterator(); ite.hasNext();) {
+			pc = ite.next();
+			pc.client.sendToClient(new SalonCombat.RmJoueur(client.infosCompte.idjoueur));
 			if (pc.client == client) {
-				pclients.remove(pc);
+				ite.remove();
 			}
 		}
+		client.salon = null;
 		return pclients.size();
 	}
 
@@ -45,9 +50,9 @@ public class Salon {
 		pclients.add(p);
 		pclients.stream().forEach((pc) -> {
 			if (pc != p) {
-				pc.client.sendToClient(new InfosCombat.NewJoueur(dj));
+				pc.client.sendToClient(new SalonCombat.NewJoueur(dj));
 			} else {
-				p.client.sendToClient(new InfosCombat.PartieTrouvee(getAllDonnees(), nomMap));
+				p.client.sendToClient(new SalonCombat.PartieTrouvee(getAllDonnees(), mapS));
 			}
 		});
 	}
@@ -77,7 +82,7 @@ public class Salon {
 		return true;
 	}
 
-	public void newPret(InfosCombat.EstPret estPret, Client client) {
+	public void newPret(SalonCombat.EstPret estPret, Client client) {
 		pclients.stream().forEach((pc) -> {
 			if (pc.client != client) {
 				pc.client.sendToClient(estPret);

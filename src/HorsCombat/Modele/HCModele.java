@@ -5,32 +5,32 @@
  */
 package HorsCombat.Modele;
 
-import Connection.checkers.LoginChecker;
+import HorsCombat.Modele.InterfacesBD.InterfaceBDLog;
+import HorsCombat.Modele.Reseau.Serveur;
 import Console.utils.ConsoleDisplay;
-import Database.InterfaceDatabase;
-import static Database.InterfaceDatabase.getAllInfosEntitesJoueur;
-import static Database.InterfaceDatabase.getAllInfosJoueur;
-import static Database.InterfaceDatabase.getSortNiveau;
-import static General.utils.Utils.sha1;
-import HorsCombat.Modele.Client.Client;
-import MoteurJeu.gameplay.entite.classe.ClasseEntite;
-import MoteurJeu.gameplay.entite.classe.ClassePersonnage;
-import MoteurJeu.gameplay.sort.Sort;
-import MoteurJeu.gameplay.sort.SortActif;
-import MoteurJeu.gameplay.sort.SortPassif;
-import Serializable.Combat.InfosCombat.AllClassePerso;
-import Serializable.Logs.AnswerLogs;
-import Serializable.Logs.AnswerLogs.InfosCompte;
-import Serializable.Logs.AskLogs;
-import Serializable.Personnages.HCPersonnage;
-import Serializable.Personnages.Sort.HCSort;
-import Serializable.Personnages.Sort.HCSort.HCNiveau;
-import Serializable.Personnages.Sort.HCSortActif;
-import Serializable.Personnages.Sort.HCSortPassif;
+import static HorsCombat.Modele.InterfacesBD.InterfaceBDGestionPersos.*;
+import static HorsCombat.Modele.InterfacesBD.InterfaceBDLog.getAllInfosJoueur;
+import HorsCombat.Modele.Reseau.Client;
+import static Main.Utils.sha1;
+import Combat.entite.classe.ClasseEntite;
+import Combat.entite.classe.ClassePersonnage;
+import Combat.sort.classe.Sort;
+import Serializable.HorsCombat.GestionPersos.AllClassePerso;
+import Serializable.HorsCombat.HCPersonnage;
+import Serializable.HorsCombat.HCSort;
+import Serializable.HorsCombat.Niveau;
+import Serializable.Log.Log.AnswerLogs;
+import Serializable.Log.Log.AskLogs;
+import Serializable.Log.Log.InfosCompte;
+import Combat.sort.classe.SortActif;
+import Combat.sort.classe.SortPassif;
+import java.io.IOException;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /**
  * HCModele.java
@@ -39,26 +39,30 @@ import java.util.HashMap;
 public class HCModele {
 
 	public static final Serveur SERVEUR = new Serveur();
-	public static final ArrayList<Client> ALLCLIENTS = SERVEUR.allClients;
 
 	public static void init() {
-		InitialData.loadAllEntites();
+		ClasseData.loadAllEntites();
+		try {
+			MapsData.loadAllMaps();
+		} catch (IOException ex) {
+			Logger.getLogger(HCModele.class.getName()).log(Level.SEVERE, null, ex);
+		}
 	}
 
 	public static long creaPerso(long idJoueur, int idClasse, String nomDonne) throws SQLException {
-		
-		long idEntite = InterfaceDatabase.addEntite(idClasse, idJoueur, nomDonne);
-		
-		ResultSet rs = InterfaceDatabase.getAllClasseSortFromEntite(idClasse);
-		while(rs.next()) {
-			InterfaceDatabase.addSort(rs.getLong("idclassesort"), idEntite);
+
+		long idEntite = addEntite(idClasse, idJoueur, nomDonne);
+
+		ResultSet rs = getAllClasseSortFromEntite(idClasse);
+		while (rs.next()) {
+			addSort(rs.getLong("idclassesort"), idEntite);
 		}
 		return idEntite;
 	}
 
 	public static AllClassePerso getAllClassePerso() throws SQLException {
 		int size = 0;
-		for (ClasseEntite ce : InitialData.allEntites.values()) {
+		for (ClasseEntite ce : ClasseData.ALL_ENTITES.values()) {
 			if (ce instanceof ClassePersonnage) {
 				size++;
 			}
@@ -66,10 +70,10 @@ public class HCModele {
 		HCPersonnage[] persos = new HCPersonnage[size];
 
 		int i = 0;
-		for (ClasseEntite ce : InitialData.allEntites.values()) {
+		for (ClasseEntite ce : ClasseData.ALL_ENTITES.values()) {
 			if (ce instanceof ClassePersonnage) {
 				persos[i] = getHCPersonnageFromClasseEntite((ClassePersonnage) ce, -1,
-						ce.nomClasse, 0, new HashMap<Integer, HCNiveau>());
+						ce.nomClasse, 0, new HashMap<Integer, Niveau>());
 				i++;
 			}
 		}
@@ -77,9 +81,18 @@ public class HCModele {
 	}
 
 	public static AnswerLogs getClientData(AskLogs askLogs) throws SQLException {
-		boolean accepted = LoginChecker.isLoginCorrect(askLogs.pseudo, sha1(askLogs.mdp));
+		boolean accepted = InterfaceBDLog.isLoginCorrect(askLogs.pseudo, sha1(askLogs.mdp));
 		if (accepted) {
-			return getPlayerAnswerLogs(askLogs.pseudo);
+			AnswerLogs answer = getPlayerAnswerLogs(askLogs.pseudo);
+
+			for (Client c : Serveur.ALL_CLIENTS) {
+				if (c.infosCompte != null
+						&& c.infosCompte.idjoueur == answer.infosCompte.idjoueur) {
+					c.deconnexion();
+					break;
+				}
+			}
+			return answer;
 		}
 		return new AnswerLogs(false, null, null, null);
 	}
@@ -88,8 +101,8 @@ public class HCModele {
 		ResultSet rsInfos = getAllInfosJoueur(pseudo);
 		ResultSet rsEntites = getAllInfosEntitesJoueur(pseudo);
 
-		InfosCompte ic = null;
-		HCPersonnage[] persos = null;
+		InfosCompte ic;
+		HCPersonnage[] persos;
 		HashMap<String, int[]> equipes = new HashMap();
 
 		if (!rsInfos.next()) {
@@ -116,31 +129,31 @@ public class HCModele {
 				niveau = (int) (rsEntites.getDouble("victoires") / rsInfos.getDouble("defaites"));
 			}
 
-			if (!(InitialData.allEntites.get(rsEntites.getInt("idclasse")) instanceof ClassePersonnage)) {
+			if (!(ClasseData.ALL_ENTITES.get(rsEntites.getInt("idclasse")) instanceof ClassePersonnage)) {
 				ConsoleDisplay.error("La classe entité d'ID " + rsEntites.getInt("idclasse") + " est passive mais possède un joueur !");
 			}
-			ClassePersonnage cea = (ClassePersonnage) InitialData.allEntites.get(rsEntites.getInt("idclasse"));
+			ClassePersonnage cea = (ClassePersonnage) ClasseData.ALL_ENTITES.get(rsEntites.getInt("idclasse"));
 
-			HashMap<Integer, HCNiveau> sortsNiveaux = new HashMap();
+			HashMap<Integer, Niveau> sortsNiveaux = new HashMap();
 			ResultSet rsSort;
 			Sort sa;
 			for (SortActif sort : cea.tabSortActif) {
 				sa = sort;
-				rsSort = getSortNiveau(sa.id, idEntite);
+				rsSort = getSortNiveau(sa.idClasseSort, idEntite);
 				if (rsSort.next()) {
-					sortsNiveaux.put(sa.id, new HCNiveau(rsSort.getInt("niveau"), rsSort.getInt("xp")));
+					sortsNiveaux.put(sa.idClasseSort, new Niveau(rsSort.getInt("niveau"), rsSort.getInt("xp")));
 				} else {
-					sortsNiveaux.put(sa.id, new HCNiveau(0, 0));
+					sortsNiveaux.put(sa.idClasseSort, new Niveau());
 				}
 			}
 
 			for (SortPassif sort : cea.tabSortPassif) {
 				sa = sort;
-				rsSort = getSortNiveau(sa.id, idEntite);
+				rsSort = getSortNiveau(sa.idClasseSort, idEntite);
 				if (rsSort.next()) {
-					sortsNiveaux.put(sa.id, new HCNiveau(rsSort.getInt("niveau"), rsSort.getInt("xp")));
+					sortsNiveaux.put(sa.idClasseSort, new Niveau(rsSort.getInt("niveau"), rsSort.getInt("xp")));
 				} else {
-					sortsNiveaux.put(sa.id, new HCNiveau(0, 0));
+					sortsNiveaux.put(sa.idClasseSort, new Niveau());
 				}
 			}
 			listPersos.add(getHCPersonnageFromClasseEntite(cea, idEntite, nomDonne, niveau, sortsNiveaux));
@@ -154,39 +167,29 @@ public class HCModele {
 	}
 
 	public static HCPersonnage getHCPersonnageFromClasseEntite(ClassePersonnage cea, int identite,
-			String nomDonne, int persoNiveau, HashMap<Integer, HCNiveau> sortsNiveaux) {
+			String nomDonne, int persoNiveau, HashMap<Integer, Niveau> sortsNiveaux) {
 
-		HCSortActif[] hcsa = new HCSortActif[cea.tabSortActif.length];
+		HCSort[] hcsa = new HCSort[cea.tabSortActif.length];
 		SortActif sa;
 		for (int i = 0; i < hcsa.length; i++) {
 			sa = cea.tabSortActif[i];
-			hcsa[i] = new HCSortActif(sa.nom, sortsNiveaux.getOrDefault(sa.id, new HCNiveau(0, 0)),
-					sa.description, sa.tempsAction, sa.cooldown, sa.fatigue);
+			hcsa[i] = new HCSort(sa.idClasseSort, sa.nom, sa.description, sortsNiveaux.getOrDefault(sa.idClasseSort, new Niveau(0, 0)), sa.tempsAction, sa.cooldown, sa.fatigue);
 		}
 
-		HCSortPassif[] hcsp = new HCSortPassif[cea.tabSortPassif.length];
+		HCSort[] hcsp = new HCSort[cea.tabSortPassif.length];
 		SortPassif sp;
 		for (int i = 0; i < hcsp.length; i++) {
 			sp = cea.tabSortPassif[i];
-			hcsp[i] = new HCSortPassif(sp.nom, sortsNiveaux.getOrDefault(sp.id, new HCNiveau(0, 0)),
-					sp.description);
+			hcsp[i] = new HCSort(sp.idClasseSort, sp.nom, sp.description, sortsNiveaux.getOrDefault(sp.idClasseSort, new Niveau(0, 0)));
 		}
 
-		return new HCPersonnage(identite, cea.id, nomDonne, cea.nomClasse, persoNiveau,
-				cea.caracPhysiqueMax.vitalite, cea.caracPhysiqueMax.tempsaction,
-				cea.caracPhysiqueMax.tempssup, cea.caracPhysiqueMax.vitesse,
-				cea.caracPhysiqueMax.fatigue, hcsa, hcsp);
+		return new HCPersonnage(identite, cea.idClasse, nomDonne, cea.nomClasse, cea.caracPhysiqueMax, persoNiveau, hcsa, hcsp);
 	}
 
-	public static HCSortActif getHCSortActifFromClasseSort(SortActif sa, HCNiveau niveau) {
-		return new HCSortActif(sa.nom, niveau, sa.description,
-				sa.tempsAction, sa.cooldown, sa.fatigue);
+	public static HCSort getHCSortFromClasseSort(Sort sa, Niveau niveau) {
+		return new HCSort(sa.idClasseSort, sa.nom, sa.description, niveau);
 	}
-
-	public static HCSortPassif getHCSortActifFromClasseSort(SortPassif sp, HCNiveau niveau) {
-		return new HCSortPassif(sp.nom, niveau, sp.description);
-	}
-
+	/*
 	private static AnswerLogs getExamplePack() {
 		boolean accepted = true;
 		String pseudo = "TestPseudo";
@@ -215,5 +218,5 @@ public class HCModele {
 					perso1, perso2
 				}, equipes);
 	}
-
+	 */
 }
