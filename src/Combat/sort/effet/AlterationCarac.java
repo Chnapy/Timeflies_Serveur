@@ -6,27 +6,41 @@
 package Combat.sort.effet;
 
 import Combat.sort.TypeCible;
-import Combat.TypeCarac;
+import Serializable.InCombat.TypeCarac;
+import Combat.entite.Entite;
+import Combat.map.Tuile;
 
 /**
  * AlterationCarac.java
- * 
+ *
  */
 public class AlterationCarac extends Effet {
 
-	private static final long serialVersionUID = -4179764516857318782L;
-	
 	public final TypeCarac carac;
 	public final int valeur;
-	
+
 	public AlterationCarac(TypeCible cible, TypeCarac carac, int valeur) {
 		super(cible);
 		this.carac = carac;
 		this.valeur = valeur;
 	}
-	
+
 	public boolean isBonus() {
 		return valeur >= 0;
+	}
+
+	@Override
+	public void affecter(Tuile tuile, Entite entite, Entite lanceur) {
+		switch (cible) {
+			case ENTITE:
+				if (entite != null) {
+					entite.caracs.get(carac).actu += valeur;
+				}
+				break;
+			case LANCEUR:
+				entite.caracs.get(carac).actu += valeur;
+				break;
+		}
 	}
 
 }

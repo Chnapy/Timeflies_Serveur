@@ -90,12 +90,4 @@ public class SalonCombat implements HorsCombat {
 		}
 	}
 
-	public static class LancementCombat extends SalonCombat {
-
-		private static final long serialVersionUID = -3229558049323216851L;
-
-		public LancementCombat() {
-		}
-	}
-
 }

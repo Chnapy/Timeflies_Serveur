@@ -4,7 +4,7 @@
  * 
  */
 
-package Combat;
+package Serializable.InCombat;
 
 /**
  * TypeCarac

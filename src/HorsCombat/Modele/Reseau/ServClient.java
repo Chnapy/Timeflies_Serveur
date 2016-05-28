@@ -82,4 +82,8 @@ public class ServClient implements Runnable {
 		out.close();
 		socket.close();
 	}
+
+	public boolean isAlive() {
+		return clientIsAlive;
+	}
 }

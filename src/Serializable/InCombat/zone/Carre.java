@@ -3,7 +3,7 @@
  * 
  * 
  */
-package Combat.sort.zone;
+package Serializable.InCombat.zone;
 
 import java.util.Arrays;
 

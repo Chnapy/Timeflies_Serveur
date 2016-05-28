@@ -40,8 +40,8 @@ public class SalonControleur extends ClientControleur<SalonCombat> {
 				if (!rs.next()) {
 					ConsoleDisplay.error("Perso introuvable " + id);
 				}
-				ldp.add(new HorsCombat.DonneePerso(getNiveau(rs.getInt("victoires"),
-						rs.getInt("defaites")), rs.getString("nom")));
+				ldp.add(new HorsCombat.DonneePerso(id, rs.getLong("idclasse"), getNiveau(rs.getInt("victoires"),
+						rs.getInt("defaites")), rs.getString("nom"), rs.getString("nomdonnee")));
 			} catch (SQLException ex) {
 				Logger.getLogger(Matchmaking.class.getName()).log(Level.SEVERE, null, ex);
 			}

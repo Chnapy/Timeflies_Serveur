@@ -25,7 +25,7 @@ public class InterfaceBDAdmin {
 		long id;
 //		removeJoueur("TestPseudo1");
 //		id = addNewJoueur("TestPseudo1", "123456", "test@mail.com");
-//		id = addClasseEntite("Boucher", 158, 32000, 4500, 101, 2);
+//		id = addClasseEntite("Boucher", 150, 30000, 1000, 80, 20);
 //		id = addClasseSort(2, "SortKiTu", "Desc", 1, 10000, 0);
 //		id = addEntite(2, 6, "Test2Entite");
 //		id = addSort(2, 6);
@@ -70,7 +70,7 @@ public class InterfaceBDAdmin {
 		}
 		return idClasse;
 	}
-	
+
 	public static long addClasseSort(long idClasseEntite, String nomSort, String description, int cooldown, int tempsAction, int type) {
 		long idClasseSort = -1;
 		try {

@@ -3,9 +3,9 @@
  * 
  * 
  */
-package Combat.sort.zone;
+package Serializable.InCombat.zone;
 
-import Serializable.InCombat.InCombat;
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Arrays;
 
@@ -15,9 +15,9 @@ import java.util.Arrays;
  actif ou de sa zone d'action.
  *
  */
-public class Zone implements InCombat {
+public class Zone implements Serializable {
 
-	private static final long serialVersionUID = 5093430735007913678L;
+	private static final long serialVersionUID = 7454854904542777682L;
 
 	//Liste des zones cumulables
 	private final ArrayList<TypeZone> listZones;

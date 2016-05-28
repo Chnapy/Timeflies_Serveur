@@ -5,21 +5,22 @@
  */
 package Combat.sort.effet;
 
+import Combat.entite.Entite;
+import Combat.map.Tuile;
 import Combat.sort.TypeCible;
-import Serializable.InCombat.InCombat;
 
 /**
  * SEffet.java
- * 
+ *
  */
-public abstract class Effet implements InCombat {
+public abstract class Effet {
 
-	private static final long serialVersionUID = 1483283495961811201L;
-	
 	public final TypeCible cible;
 
 	public Effet(TypeCible cible) {
 		this.cible = cible;
 	}
+
+	public abstract void affecter(Tuile tuile, Entite entite, Entite lanceur);
 
 }

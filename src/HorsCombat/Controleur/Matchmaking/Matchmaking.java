@@ -5,6 +5,7 @@
  */
 package HorsCombat.Controleur.Matchmaking;
 
+import Combat.Combat;
 import HorsCombat.Modele.MapsData;
 import static Main.ThreadManager.EXEC;
 import HorsCombat.Modele.Reseau.Client;
@@ -23,16 +24,22 @@ import java.util.logging.Logger;
 public class Matchmaking {
 
 	private static final ArrayList<Salon> salons = new ArrayList();
-	private static final MoteurMM moteur = new MoteurMM();
+	private static final ArrayList<Combat> combats = new ArrayList();
+//	private static final MoteurMM moteur = new MoteurMM();
 
 	public static void init() {
-		EXEC.submit(moteur);
+//		EXEC.submit(moteur);
 	}
 
-	public static void removeClient(Client client, Salon salon) {
-		int size = salon.removeClient(client);
-		if (size == 0) {
-			removeSalon(salon);
+	public static void removeClient(Client client) {
+		if (client.salon != null) {
+			int size = client.salon.removeClient(client);
+			if (size == 0) {
+				removeSalon(client.salon);
+			}
+		}
+		if (client.combat != null) {
+			client.combat.removeClient(client);
 		}
 	}
 
@@ -65,14 +72,16 @@ public class Matchmaking {
 		return choice;
 	}
 
-	private static void lancerCombat(Salon s) {
-
+	private static Combat creerCombat(Salon s) {
+		return s.creerCombat();
 	}
 
 	public static void newPret(SalonCombat.EstPret estPret, Client client) {
 		client.salon.newPret(estPret, client);
 		if (client.salon.isAllReady()) {
-			lancerCombat(client.salon);
+			Combat c = creerCombat(client.salon);
+			combats.add(c);
+			EXEC.submit(c);
 		}
 	}
 
@@ -97,7 +106,7 @@ public class Matchmaking {
 		private void act() {
 			for (Salon s : salons) {
 				if (s.isFull() || s.pclients.size() > 1) {
-					lancerCombat(s);
+					creerCombat(s);
 				}
 			}
 		}

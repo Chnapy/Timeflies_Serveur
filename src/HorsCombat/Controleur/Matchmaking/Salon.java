@@ -5,8 +5,14 @@
  */
 package HorsCombat.Controleur.Matchmaking;
 
+import Combat.Combat;
+import Combat.entite.EntiteActiveJouable;
+import Combat.entite.Equipe;
+import Combat.entite.classe.ClasseEntiteActive;
+import static HorsCombat.Modele.ClasseData.ALL_ENTITES;
 import HorsCombat.Modele.Reseau.Client;
 import Serializable.HorsCombat.HorsCombat.DonneeJoueur;
+import Serializable.HorsCombat.HorsCombat.DonneePerso;
 import Serializable.HorsCombat.Map.MapSerializable;
 import Serializable.HorsCombat.SalonCombat;
 import Serializable.HorsCombat.SalonCombat.AskCombat;
@@ -57,7 +63,42 @@ public class Salon {
 		});
 	}
 
-	public void lancerCombat() {
+	public Combat creerCombat() {
+		ArrayList<Equipe> equipes = new ArrayList();
+		int ie = 0;
+		switch (type) {
+			case SOLO:
+				for (PlayableClient pc : pclients) {
+					for (DonneePerso dp : pc.donneesJoueur.persos) {
+						Equipe equipe = new Equipe(ie);
+						EntiteActiveJouable ej = new EntiteActiveJouable(
+								(ClasseEntiteActive) ALL_ENTITES.get((int) dp.idClasse), pc.client,
+								dp.id, dp.nomDonne, dp.niveau, equipe);
+						equipe.addEntite(ej);
+						equipes.add(equipe);
+						ie++;
+					}
+				}
+				break;
+			case EQUIPE_CPS:
+				for (PlayableClient pc : pclients) {
+					Equipe equipe = new Equipe(ie);
+					for (DonneePerso dp : pc.donneesJoueur.persos) {
+						EntiteActiveJouable ej = new EntiteActiveJouable(
+								(ClasseEntiteActive) ALL_ENTITES.get((int) dp.idClasse), pc.client,
+								dp.id, dp.nomDonne, dp.niveau, equipe);
+						equipe.addEntite(ej);
+					}
+					equipes.add(equipe);
+					ie++;
+				}
+				break;
+			case EQUIPE:
+				//TODO
+				break;
+		}
+		
+		return new Combat(equipes, mapS);
 
 	}
 

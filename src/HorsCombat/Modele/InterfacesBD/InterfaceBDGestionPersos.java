@@ -33,7 +33,7 @@ public class InterfaceBDGestionPersos {
 	public static ResultSet getPersoNivClasse(long idEntite) {
 		ResultSet rs = null;
 		try {
-			rs = DBMapper.executeQuery("select victoires, defaites, nom from entite natural join classeentite where identite=?", SELECT, idEntite);
+			rs = DBMapper.executeQuery("select idclasse, victoires, defaites, nom, nomdonnee from entite natural join classeentite where identite=?", SELECT, idEntite);
 		} catch (SQLException ex) {
 			Logger.getLogger(InterfaceBDAdmin.class.getName()).log(Level.SEVERE, null, ex);
 		}

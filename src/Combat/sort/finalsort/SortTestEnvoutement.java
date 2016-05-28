@@ -9,8 +9,8 @@ import Combat.sort.classe.SortActif;
 import Combat.sort.effet.AddEnvoutement;
 import Combat.sort.effet.Effet;
 import Combat.sort.TypeCible;
-import Combat.sort.zone.Carre;
-import Combat.sort.zone.Zone;
+import Serializable.InCombat.zone.Carre;
+import Serializable.InCombat.zone.Zone;
 
 /**
  * SortTestEnvoutement.java

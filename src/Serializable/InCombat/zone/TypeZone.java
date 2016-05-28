@@ -3,9 +3,9 @@
  * 
  * 
  */
-package Combat.sort.zone;
+package Serializable.InCombat.zone;
 
-import Serializable.InCombat.InCombat;
+import java.io.Serializable;
 
 /**
  * TypeZone.java
@@ -14,9 +14,9 @@ import Serializable.InCombat.InCombat;
  * Une zone négative fait un "trou" dans une zone positive.
  *
  */
-public abstract class TypeZone implements InCombat {
+public abstract class TypeZone implements Serializable {
 
-	private static final long serialVersionUID = -8400372835931318544L;
+	private static final long serialVersionUID = -8698183332248029149L;
 
 	//Ajoute de la surface si positif, en retire sinon
 	private final boolean positive;

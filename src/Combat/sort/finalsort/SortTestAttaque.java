@@ -5,13 +5,13 @@
  */
 package Combat.sort.finalsort;
 
-import Combat.TypeCarac;
+import Serializable.InCombat.TypeCarac;
 import Combat.sort.classe.SortActif;
 import Combat.sort.TypeCible;
 import Combat.sort.effet.AlterationCarac;
 import Combat.sort.effet.Effet;
-import Combat.sort.zone.Carre;
-import Combat.sort.zone.Zone;
+import Serializable.InCombat.zone.Carre;
+import Serializable.InCombat.zone.Zone;
 
 /**
  * SortTestAttaque.java

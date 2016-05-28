@@ -5,7 +5,9 @@
  */
 package HorsCombat.Modele.Reseau;
 
+import Combat.Combat;
 import Console.utils.ConsoleDisplay;
+import HorsCombat.Controleur.ClientControleur.CombatControleur;
 import HorsCombat.Controleur.ClientControleur.GestionPersosControleur;
 import HorsCombat.Controleur.ClientControleur.LogControleur;
 import HorsCombat.Controleur.Matchmaking.Matchmaking;
@@ -17,6 +19,7 @@ import static HorsCombat.Modele.Reseau.Client.ClientState.LOGGED;
 import Serializable.HorsCombat.GestionPersos;
 import Serializable.HorsCombat.HCPersonnage;
 import Serializable.HorsCombat.SalonCombat;
+import Serializable.InCombat.InCombat;
 import Serializable.Log.Log;
 import Serializable.Log.Log.CheckVersion;
 import Serializable.Log.Log.InfosCompte;
@@ -37,12 +40,14 @@ public class Client {
 	public InfosCompte infosCompte;
 	public HCPersonnage[] persos;
 	public Salon salon;
+	public Combat combat;
 
 	public ClientState state;
 
 	private final LogControleur logC;
 	private final GestionPersosControleur gestionPersosC;
 	private final SalonControleur salonC;
+	private final CombatControleur combatC;
 
 	public Client(Socket soc, long idReseau) throws IOException {
 		this.servClient = new ServClient(soc, this);
@@ -50,11 +55,13 @@ public class Client {
 		infosCompte = null;
 		persos = null;
 		salon = null;
+		combat = null;
 		state = FIRST;
 
 		logC = new LogControleur(this);
 		gestionPersosC = new GestionPersosControleur(this);
 		salonC = new SalonControleur(this);
+		combatC = new CombatControleur(this);
 	}
 
 	public void sendToClient(Object o) {
@@ -78,6 +85,10 @@ public class Client {
 			if (state.equals(LOGGED)) {
 				gestionPersosC.receiveFromClient((GestionPersos) pack);
 			}
+		} else if (pack instanceof InCombat) {
+			if (state.equals(LOGGED) && combat != null) {
+				combatC.receiveFromClient((InCombat) pack);
+			}
 		}
 	}
 
@@ -85,9 +96,7 @@ public class Client {
 		errln("DECONNEXION");
 
 		state = FIRST;
-		if (salon != null) {
-			Matchmaking.removeClient(this, salon);
-		}
+		Matchmaking.removeClient(this);
 		Serveur.removeClient(this);
 		try {
 			servClient.close();
@@ -109,6 +118,10 @@ public class Client {
 		} else {
 			return "C" + idReseau + "-" + infosCompte.idjoueur + "-" + infosCompte.pseudo + " " + text;
 		}
+	}
+
+	public boolean isAlive() {
+		return servClient.isAlive();
 	}
 
 	public static enum ClientState {

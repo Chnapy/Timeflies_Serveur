@@ -24,6 +24,7 @@ import Serializable.Log.Log.AskLogs;
 import Serializable.Log.Log.InfosCompte;
 import Combat.sort.classe.SortActif;
 import Combat.sort.classe.SortPassif;
+import Serializable.HorsCombat.HorsCombat.DonneePerso;
 import java.io.IOException;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -48,6 +49,8 @@ public class HCModele {
 			Logger.getLogger(HCModele.class.getName()).log(Level.SEVERE, null, ex);
 		}
 	}
+	
+//	public static ArrayList<DonneePerso> getDonnee
 
 	public static long creaPerso(long idJoueur, int idClasse, String nomDonne) throws SQLException {
 
