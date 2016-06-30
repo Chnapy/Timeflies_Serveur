@@ -19,8 +19,6 @@ import Combat.sort.declencheur.Declencheur;
  */
 public class EnvoutementTestEffet extends Envoutement {
 
-	private static final long serialVersionUID = -8721142333478972324L;
-
 	public EnvoutementTestEffet() {
 		super(new Declencheur[]{
 			(Effet effet) -> {

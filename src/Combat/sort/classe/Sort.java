@@ -20,20 +20,12 @@ public abstract class Sort {
 	//Id classe entité
 	public final int idClasseEntite;
 
-	//Nom du sort
-	public final String nom;
-
-	//Description
-	public final String description;
-
 	//Tableau des effets
 	public final Effet[] tabEffets;
 
-	public Sort(int idClasseSort, int idClasseEntite, String nom, String description, Effet[] effets) {
+	public Sort(int idClasseSort, int idClasseEntite, Effet[] effets) {
 		this.idClasseSort = idClasseSort;
 		this.idClasseEntite = idClasseEntite;
-		this.nom = nom;
-		this.description = description;
 		tabEffets = effets;
 	}
 

@@ -59,15 +59,15 @@ public class ClasseData {
 			switch (rs.getInt("type")) {
 				case 0:
 					ALL_ENTITES.put(rs.getInt("idclasse"),
-							new ClassePersonnage(rs.getInt("idclasse"), rs.getString("nom"), cpm));
+							new ClassePersonnage(rs.getInt("idclasse"), cpm, rs.getInt("tempsdeplacement")));
 					break;
 				case 1:
 					ALL_ENTITES.put(rs.getInt("idclasse"),
-							new ClasseEntiteActive(rs.getInt("idclasse"), rs.getString("nom"), cpm));
+							new ClasseEntiteActive(rs.getInt("idclasse"), cpm, rs.getInt("tempsdeplacement")));
 					break;
 				case 2:
 					ALL_ENTITES.put(rs.getInt("idclasse"),
-							new ClasseEntitePassive(rs.getInt("idclasse"), rs.getString("nom"), cpm));
+							new ClasseEntitePassive(rs.getInt("idclasse"), cpm));
 					break;
 			}
 		}
@@ -77,9 +77,9 @@ public class ClasseData {
 		ResultSet rs = getAllClasseSorts();
 		while (rs.next()) {
 			ALL_SORTS.put(rs.getInt("idclassesort"),
-					getSortById(rs.getInt("idclassesort"), rs.getInt("idclasseentite"), rs.getString("nom"),
-							rs.getString("description"), rs.getInt("tempsaction"),
-							rs.getInt("cooldown"), rs.getInt("fatigue"), rs.getInt("type")));
+					getSortById(rs.getInt("idclassesort"), rs.getInt("idclasseentite"),
+							rs.getInt("tempsaction"), rs.getInt("cooldown"),
+							rs.getInt("fatigue"), rs.getInt("type")));
 		}
 	}
 
@@ -89,14 +89,14 @@ public class ClasseData {
 		});
 	}
 
-	private static Sort getSortById(int id, int idClasseEntite, String nom, String description, int tempsAction, int cooldown, int fatigue, int type) {
+	private static Sort getSortById(int id, int idClasseEntite, int tempsAction, int cooldown, int fatigue, int type) {
 		switch (id) {
 			case 1:
-				return new SortTestAttaque(id, idClasseEntite, nom, description, tempsAction, cooldown, fatigue);
+				return new SortTestAttaque(id, idClasseEntite, tempsAction, cooldown, fatigue);
 			case 2:
-				return new SortTestTP(id, idClasseEntite, nom, description, tempsAction, cooldown, fatigue);
+				return new SortTestTP(id, idClasseEntite, tempsAction, cooldown, fatigue);
 			default:
-				return getSortById(1, idClasseEntite, nom, description, tempsAction, cooldown, fatigue, type);
+				return getSortById(1, idClasseEntite, tempsAction, cooldown, fatigue, type);
 		}
 	}
 

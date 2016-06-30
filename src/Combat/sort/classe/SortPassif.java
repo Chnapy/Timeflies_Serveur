@@ -18,11 +18,9 @@ import Combat.sort.envout.Envoutement;
  */
 public abstract class SortPassif extends Sort {
 
-	private static final long serialVersionUID = -389570352163243929L;
+	public SortPassif(int id, int idClasseEntite, Declencheur[] declencheurs, Effet[] effets) {
 
-	public SortPassif(int id, int idClasseEntite, String nom, String description, Declencheur[] declencheurs, Effet[] effets) {
-
-		super(id, idClasseEntite, nom, description, new Effet[]{
+		super(id, idClasseEntite, new Effet[]{
 			new AddEnvoutement(TypeCible.LANCEUR,
 			new Envoutement(declencheurs, -1, effets))
 		});

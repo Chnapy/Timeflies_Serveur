@@ -18,11 +18,8 @@ import Serializable.InCombat.zone.Zone;
  */
 public class SortTestTP extends SortActif {
 
-	private static final long serialVersionUID = 4143560593368171106L;
-
-	public SortTestTP(int idClasseSort, int idClasseEntite, String nom, String description, int tempsAction, int _cooldown, int _fatigue) {
+	public SortTestTP(int idClasseSort, int idClasseEntite, int tempsAction, int _cooldown, int _fatigue) {
 		super(idClasseSort, idClasseEntite,
-				nom, description,
 				new Effet[]{
 					new Teleportation(TypeCible.LANCEUR)
 				},

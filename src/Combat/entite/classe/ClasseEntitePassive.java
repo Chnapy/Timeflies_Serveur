@@ -14,8 +14,8 @@ import Serializable.HorsCombat.CaracteristiquePhysiqueMax;
  */
 public class ClasseEntitePassive extends ClasseEntite {
 
-	public ClasseEntitePassive(int idClasse, String nomClasse, CaracteristiquePhysiqueMax cPhysique) {
-		super(idClasse, nomClasse, cPhysique);
+	public ClasseEntitePassive(int idClasse, CaracteristiquePhysiqueMax cPhysique) {
+		super(idClasse, cPhysique);
 	}
 
 }

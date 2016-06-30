@@ -5,7 +5,7 @@
  */
 package Combat.entite;
 
-import Serializable.InCombat.donnee.InEntite;
+import Serializable.InCombat.donnee.InEntitePassive;
 import Serializable.InCombat.donnee.InEquipe;
 import java.util.ArrayList;
 
@@ -54,7 +54,7 @@ public class Equipe {
 	}
 	
 	public InEquipe toInEquipe() {
-		ArrayList<InEntite> lie = new ArrayList();
+		ArrayList<InEntitePassive> lie = new ArrayList();
 		entites.forEach((e) -> {
 			lie.add(e.toInEntite());
 		});

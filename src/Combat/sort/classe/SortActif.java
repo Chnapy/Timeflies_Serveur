@@ -15,8 +15,6 @@ import Serializable.InCombat.zone.Zone;
  */
 public abstract class SortActif extends Sort {
 
-	private static final long serialVersionUID = -7265138634738681683L;
-
 	//Zone de portée
 	private final Zone zonePortee;
 
@@ -31,10 +29,10 @@ public abstract class SortActif extends Sort {
 
 	public final int fatigue;
 
-	public SortActif(int idClasseSort, int idClasseEntite, String nom, String description, Effet[] effets,
+	public SortActif(int idClasseSort, int idClasseEntite, Effet[] effets,
 			Zone zportee, Zone zaction, int tempsAction, int _cooldown, int _fatigue) {
 
-		super(idClasseSort, idClasseEntite, nom, description, effets);
+		super(idClasseSort, idClasseEntite, effets);
 
 		zonePortee = zportee;
 		zoneAction = zaction;

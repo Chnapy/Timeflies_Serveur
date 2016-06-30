@@ -21,7 +21,7 @@ public class Deplacer extends SortActif {
 	private static final int TEMPS_ACTION = 500;
 
 	public Deplacer() {
-		super(-1, -1, "", "",
+		super(-1, -1,
 				new Effet[]{
 					new Teleportation(LANCEUR)
 				},

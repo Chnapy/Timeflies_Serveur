@@ -21,15 +21,11 @@ public abstract class ClasseEntite {
 	//Caractéristiques physiques initiales de l'entité
 	public final CaracteristiquePhysiqueMax caracPhysiqueMax;
 
-	//Nom de la classe
-	public final String nomClasse;
-
 	//Sorts passifs de l'entité
 	public SortPassif[] tabSortPassif;
 
-	public ClasseEntite(int idClasse, String nomClasse, CaracteristiquePhysiqueMax caracPhysiqueMax) {
+	public ClasseEntite(int idClasse, CaracteristiquePhysiqueMax caracPhysiqueMax) {
 		this.idClasse = idClasse;
-		this.nomClasse = nomClasse;
 		this.caracPhysiqueMax = caracPhysiqueMax;
 	}
 

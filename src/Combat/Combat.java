@@ -28,10 +28,15 @@ import static Main.ThreadManager.EXEC;
 import Serializable.Duo;
 import Serializable.HorsCombat.Map.MapSerializable;
 import Serializable.HorsCombat.Map.PosPlacement;
-import Serializable.InCombat.DebutCombat;
+import Serializable.InCombat.ChargementCombat;
 import Serializable.InCombat.InCombat;
-import Serializable.InCombat.LancerSort;
 import Serializable.InCombat.donnee.InEquipe;
+import Serializable.InCombat.sort.LancerSort;
+import Serializable.InCombat.tour.DebutCombat;
+import Serializable.InCombat.tour.DebutTour;
+import Serializable.InCombat.tour.DebutTourGlobal;
+import Serializable.InCombat.tour.FinTour;
+import Serializable.InCombat.tour.FinTourGlobal;
 import Serializable.Position;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -91,8 +96,7 @@ public class Combat implements Runnable {
 
 	@Override
 	public void run() {
-		long startCombat = System.currentTimeMillis();
-		sendToAll(new DebutCombat(startCombat, TIME_WAIT, allToInEquipe()));
+		sendToAll(new ChargementCombat(allToInEquipe()));
 		entites.forEach((e) -> {
 			for (SortPassif sp : e.classe.tabSortPassif) {
 				for (Effet effet : sp.tabEffets) {
@@ -100,23 +104,29 @@ public class Combat implements Runnable {
 				}
 			}
 		});
-		try {
-			Thread.sleep(TIME_WAIT - (System.currentTimeMillis() - startCombat));
-		} catch (InterruptedException ex) {
-			Logger.getLogger(Combat.class.getName()).log(Level.SEVERE, null, ex);
-		}
 		state = CombatState.ENCOURS;
-		applyEffetToAll(new EfDebutCombat());
+		debutCombat();
 		while (enCours) {
 			tourGlobal();
 		}
 		state = CombatState.END;
 	}
+	
+	private void debutCombat() {
+		applyEffetToAll(new EfDebutCombat());
+		sendToAll(new DebutCombat(System.currentTimeMillis() + TIME_WAIT));
+		try {
+			Thread.sleep(TIME_WAIT);
+		} catch (InterruptedException ex) {
+			Logger.getLogger(Combat.class.getName()).log(Level.SEVERE, null, ex);
+		}
+	}
 
 	private void tourGlobal() {
 		indexTG++;
-		redefOrdreJeu();
+		long[] ordre = redefOrdreJeu();
 		applyEffetToAll(new EfDebutTourGlobal());
+		sendToAll(new DebutTourGlobal(System.currentTimeMillis(), indexTG, ordre));
 		entites.forEach((e) -> {
 			try {
 				if (enCours && e.canPlay()) {
@@ -128,13 +138,15 @@ public class Combat implements Runnable {
 			}
 		});
 		applyEffetToAll(new EfFinTourGlobal());
+		sendToAll(new FinTourGlobal(System.currentTimeMillis(), indexTG));
 	}
 
 	private void tour() throws InterruptedException {
 		indexT++;
 		applyEffetToAll(new EfDebutTour());
-		System.out.println("TEST1");
 		timeT = System.currentTimeMillis();
+		sendToAll(new DebutTour(timeT, indexT, entiteEnCours.id));
+		
 		Thread.sleep(entiteEnCours.caracs.get(TEMPSACTION).actu);
 		if (sortEnCours != null && sortEnCours.first.isEnCours()) {
 			Thread.sleep(entiteEnCours.caracs.get(TypeCarac.TEMPSSUP).actu);
@@ -142,12 +154,13 @@ public class Combat implements Runnable {
 				sortEnCours.second.cancel(true);
 			}
 		}
-		System.out.println("TEST2");
+		
 		applyEffetToAll(new EfFinTour());
+		sendToAll(new FinTour(System.currentTimeMillis(), indexT, entiteEnCours.id));
 		sortEnCours = null;
 	}
 
-	private void redefOrdreJeu() {
+	private long[] redefOrdreJeu() {
 		entites.sort((Entite e1, Entite e2) -> {
 			if (e1.caracs.get(INITIATIVE).actu < e1.caracs.get(INITIATIVE).actu) {
 				return -1;
@@ -157,6 +170,12 @@ public class Combat implements Runnable {
 			}
 			return 0;
 		});
+		
+		long[] ordre = new long[entites.size()];
+		for(int i = 0; i < entites.size(); i++) {
+			ordre[i] = entites.get(i).id;
+		}
+		return ordre;
 	}
 
 	private void lancerSort(SortActif sort, Position pos, long timeStart) {
@@ -253,7 +272,7 @@ public class Combat implements Runnable {
 						ite.hasNext();) {
 					p = ite.next();
 					if (p.numEquipe == equipe.numero) {
-						e.position = p.position;
+						e.position = new Position(p.position.y, p.position.x);
 						ite.remove();
 						break;
 					}
@@ -278,7 +297,7 @@ public class Combat implements Runnable {
 		}
 		SortActif sort = getSortActifFromId(lancerSort.idClasseSort, entiteEnCours.classe.tabSortActif);
 
-		lancerSort(sort, lancerSort.position, lancerSort.sendTime);
+		lancerSort(sort, lancerSort.position, lancerSort.beginTime);
 	}
 
 	private static SortActif getSortActifFromId(long idClasseSort, SortActif[] sortsActif) {

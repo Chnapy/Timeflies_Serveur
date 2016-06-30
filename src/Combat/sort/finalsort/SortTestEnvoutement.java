@@ -19,10 +19,8 @@ import Serializable.InCombat.zone.Zone;
  */
 public class SortTestEnvoutement extends SortActif {
 
-	private static final long serialVersionUID = -8193941312929700532L;
-
-	public SortTestEnvoutement(int idClasseSort, int idClasseEntite, String nom, String description, int tempsAction, int _cooldown, int _fatigue) {
-		super(idClasseSort, idClasseEntite, nom, description,
+	public SortTestEnvoutement(int idClasseSort, int idClasseEntite, int tempsAction, int _cooldown, int _fatigue) {
+		super(idClasseSort, idClasseEntite,
 				new Effet[]{
 					new AddEnvoutement(TypeCible.ENTITE, new EnvoutementTestEffet())
 				},

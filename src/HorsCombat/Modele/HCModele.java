@@ -15,16 +15,15 @@ import static Main.Utils.sha1;
 import Combat.entite.classe.ClasseEntite;
 import Combat.entite.classe.ClassePersonnage;
 import Combat.sort.classe.Sort;
-import Serializable.HorsCombat.GestionPersos.AllClassePerso;
-import Serializable.HorsCombat.HCPersonnage;
-import Serializable.HorsCombat.HCSort;
-import Serializable.HorsCombat.Niveau;
 import Serializable.Log.Log.AnswerLogs;
 import Serializable.Log.Log.AskLogs;
 import Serializable.Log.Log.InfosCompte;
 import Combat.sort.classe.SortActif;
 import Combat.sort.classe.SortPassif;
-import Serializable.HorsCombat.HorsCombat.DonneePerso;
+import Serializable.HorsCombat.GestionPersos.AllClassePerso;
+import Serializable.HorsCombat.HCPersonnage;
+import Serializable.HorsCombat.HCSort;
+import Serializable.HorsCombat.Niveau;
 import java.io.IOException;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -49,9 +48,8 @@ public class HCModele {
 			Logger.getLogger(HCModele.class.getName()).log(Level.SEVERE, null, ex);
 		}
 	}
-	
-//	public static ArrayList<DonneePerso> getDonnee
 
+//	public static ArrayList<DonneePerso> getDonnee
 	public static long creaPerso(long idJoueur, int idClasse, String nomDonne) throws SQLException {
 
 		long idEntite = addEntite(idClasse, idJoueur, nomDonne);
@@ -76,7 +74,7 @@ public class HCModele {
 		for (ClasseEntite ce : ClasseData.ALL_ENTITES.values()) {
 			if (ce instanceof ClassePersonnage) {
 				persos[i] = getHCPersonnageFromClasseEntite((ClassePersonnage) ce, -1,
-						ce.nomClasse, 0, new HashMap<Integer, Niveau>());
+						null, 0, new HashMap<Integer, Niveau>());
 				i++;
 			}
 		}
@@ -176,21 +174,21 @@ public class HCModele {
 		SortActif sa;
 		for (int i = 0; i < hcsa.length; i++) {
 			sa = cea.tabSortActif[i];
-			hcsa[i] = new HCSort(sa.idClasseSort, sa.nom, sa.description, sortsNiveaux.getOrDefault(sa.idClasseSort, new Niveau(0, 0)), sa.tempsAction, sa.cooldown, sa.fatigue);
+			hcsa[i] = new HCSort(sa.idClasseSort, sortsNiveaux.getOrDefault(sa.idClasseSort, new Niveau(0, 0)), sa.tempsAction, sa.cooldown, sa.fatigue);
 		}
 
 		HCSort[] hcsp = new HCSort[cea.tabSortPassif.length];
 		SortPassif sp;
 		for (int i = 0; i < hcsp.length; i++) {
 			sp = cea.tabSortPassif[i];
-			hcsp[i] = new HCSort(sp.idClasseSort, sp.nom, sp.description, sortsNiveaux.getOrDefault(sp.idClasseSort, new Niveau(0, 0)));
+			hcsp[i] = new HCSort(sp.idClasseSort, sortsNiveaux.getOrDefault(sp.idClasseSort, new Niveau(0, 0)));
 		}
 
-		return new HCPersonnage(identite, cea.idClasse, nomDonne, cea.nomClasse, cea.caracPhysiqueMax, persoNiveau, hcsa, hcsp);
+		return new HCPersonnage(identite, cea.idClasse, nomDonne, cea.caracPhysiqueMax, persoNiveau, hcsa, hcsp);
 	}
 
 	public static HCSort getHCSortFromClasseSort(Sort sa, Niveau niveau) {
-		return new HCSort(sa.idClasseSort, sa.nom, sa.description, niveau);
+		return new HCSort(sa.idClasseSort, niveau);
 	}
 	/*
 	private static AnswerLogs getExamplePack() {

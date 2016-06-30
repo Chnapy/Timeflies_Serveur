@@ -19,10 +19,8 @@ import Combat.sort.effet.Effet;
  */
 public class SortPassifTest extends SortPassif {
 
-	private static final long serialVersionUID = 6678067439106254014L;
-
-	public SortPassifTest(int id, int idClasseEntite, String nom, String description) {
-		super(id, idClasseEntite, nom, description, new Declencheur[]{
+	public SortPassifTest(int id, int idClasseEntite) {
+		super(id, idClasseEntite, new Declencheur[]{
 			Declencheur.DEBUT_COMBAT
 		}, new Effet[] {
 			new AlterationCarac(TypeCible.ENTITE, TypeCarac.VITESSE, 10)

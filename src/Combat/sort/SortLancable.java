@@ -9,8 +9,6 @@ import Combat.sort.classe.SortActif;
 import Combat.sort.effet.Effet;
 import Serializable.Position;
 import java.util.ArrayList;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 /**
  * SortLancable.java
@@ -41,7 +39,7 @@ public abstract class SortLancable implements Runnable {
 				});
 			}
 		} catch (InterruptedException ex) {
-			System.out.println("Sort interrompu " + sort.nom);
+			System.out.println("Sort interrompu " + sort.idClasseSort);
 		}
 		enCours = false;
 	}

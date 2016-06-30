@@ -21,7 +21,7 @@ public class Orienter extends SortActif {
 	private static final int TEMPS_ACTION = 0;
 
 	public Orienter() {
-		super(-1, -1, "", "",
+		super(-2, -1,
 				new Effet[]{
 					new Rotation(LANCEUR)
 				},

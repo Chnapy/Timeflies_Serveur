@@ -8,7 +8,7 @@ package HorsCombat.Controleur.ClientControleur;
 import HorsCombat.Modele.Reseau.Client;
 import Main.ClientControleur;
 import Serializable.InCombat.InCombat;
-import Serializable.InCombat.LancerSort;
+import Serializable.InCombat.sort.LancerSort;
 
 /**
  * CombatControleur.java

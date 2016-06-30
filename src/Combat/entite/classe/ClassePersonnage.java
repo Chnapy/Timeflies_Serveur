@@ -14,8 +14,9 @@ import Serializable.HorsCombat.CaracteristiquePhysiqueMax;
  */
 public class ClassePersonnage extends ClasseEntiteActive {
 
-	public ClassePersonnage(int id, String nom, CaracteristiquePhysiqueMax cPhysique) {
-		super(id, nom, cPhysique);
+	public ClassePersonnage(int id, 
+			CaracteristiquePhysiqueMax cPhysique, int tempsDeplacement) {
+		super(id, cPhysique, tempsDeplacement);
 	}
 
 }

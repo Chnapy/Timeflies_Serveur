@@ -41,7 +41,7 @@ public class SalonControleur extends ClientControleur<SalonCombat> {
 					ConsoleDisplay.error("Perso introuvable " + id);
 				}
 				ldp.add(new HorsCombat.DonneePerso(id, rs.getLong("idclasse"), getNiveau(rs.getInt("victoires"),
-						rs.getInt("defaites")), rs.getString("nom"), rs.getString("nomdonnee")));
+						rs.getInt("defaites")), rs.getString("nomdonnee")));
 			} catch (SQLException ex) {
 				Logger.getLogger(Matchmaking.class.getName()).log(Level.SEVERE, null, ex);
 			}

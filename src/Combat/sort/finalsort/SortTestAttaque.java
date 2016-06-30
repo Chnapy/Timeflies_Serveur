@@ -19,11 +19,8 @@ import Serializable.InCombat.zone.Zone;
  */
 public class SortTestAttaque extends SortActif {
 
-	private static final long serialVersionUID = -4713545234490381938L;
-
-	public SortTestAttaque(int idClasseSort, int idClasseEntite, String nom, String description, int tempsAction, int _cooldown, int _fatigue) {
+	public SortTestAttaque(int idClasseSort, int idClasseEntite, int tempsAction, int _cooldown, int _fatigue) {
 		super(idClasseSort, idClasseEntite,
-				nom, description,
 				new Effet[]{
 					new AlterationCarac(TypeCible.ENTITE, TypeCarac.VITALITE, 30)
 				},

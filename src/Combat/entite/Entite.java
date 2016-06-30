@@ -12,7 +12,7 @@ import Combat.entite.classe.ClasseEntite;
 import Combat.sort.classe.SortPassif;
 import Combat.sort.envout.Envoutement;
 import HorsCombat.Modele.Reseau.Client;
-import Serializable.InCombat.donnee.InEntite;
+import Serializable.InCombat.donnee.InEntitePassive;
 import Serializable.InCombat.donnee.InSortPassif;
 import Serializable.Position;
 import java.util.ArrayList;
@@ -58,7 +58,7 @@ public class Entite<C extends ClasseEntite> {
 	public boolean isAlive() {
 		return alive;
 	}
-	
+
 	public void setAlive(boolean alive) {
 		this.alive = alive;
 	}
@@ -66,13 +66,13 @@ public class Entite<C extends ClasseEntite> {
 	public boolean canPlay() {
 		return isAlive() && isEntiteActive();
 	}
-	
-	public InEntite toInEntite() {
+
+	public InEntitePassive toInEntite() {
 		ArrayList<InSortPassif> lisp = new ArrayList();
-		for(SortPassif sp : classe.tabSortPassif) {
-			lisp.add(new InSortPassif(sp.idClasseSort, sp.nom, sp.description));
+		for (SortPassif sp : classe.tabSortPassif) {
+			lisp.add(new InSortPassif(sp.idClasseSort, -1));
 		}
-		return new InEntite(id, classe.nomClasse, classe.nomClasse, niveau, position, orientation, caracs, lisp, null);
+		return new InEntitePassive(id, classe.idClasse, client.infosCompte.idjoueur, niveau, position, orientation, caracs, lisp);
 	}
 
 }

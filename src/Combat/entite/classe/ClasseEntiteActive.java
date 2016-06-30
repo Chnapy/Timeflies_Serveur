@@ -18,11 +18,13 @@ public class ClasseEntiteActive extends ClasseEntite {
 
 	//Tableau des sorts actifs
 	public SortActif[] tabSortActif;
+	public final int tempsDeplacement;
 
-	public ClasseEntiteActive(int idClasse, String nomClasse,
-			CaracteristiquePhysiqueMax cPhysique) {
+	public ClasseEntiteActive(int idClasse,
+			CaracteristiquePhysiqueMax cPhysique, int tempsDeplacement) {
 
-		super(idClasse, nomClasse, cPhysique);
+		super(idClasse, cPhysique);
+		this.tempsDeplacement = tempsDeplacement;
 	}
 	
 	public void setTabSortActif(SortActif[] tab) {
